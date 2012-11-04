@@ -1,0 +1,36 @@
+# November 4, 2012
+#  
+#  This document should contain the design goals for this project.
+#
+
+1.00 User Experience
+1.10 Roguelike Traits
+1.20 Map and World
+1.30 Crafting Traits
+1.40 Dynamic Environment
+1.50 Database Connectivity
+1.60 Multiplayer World
+
+2.00 Code Design
+2.10 Visuals Engine
+2.20 MVC? Decomposition
+
+
+
+
+
+
+
+
+# 2.00 Code Design
+  Buzzwords:
+    MVC-style decomposition.
+    Messenging/Event System.
+      - Observer python pattern?
+
+
+## 2.20 MVC? Decomposition
+
+  MVC is nice, I've used it before. Cons, might be easiest to use my own system?
+  Pro's MVC is nice out of the box.
+
