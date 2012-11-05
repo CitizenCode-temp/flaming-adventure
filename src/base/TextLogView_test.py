@@ -8,3 +8,4 @@ class TestTextLogView(unittest.TestCase):
     self.evManager = EventManager.EventManager()
     self.textLV = TextLogView.TextLogView(self.evManager)
     self.textLV.notify( Event.Event() )
+    self.textLV.log( "Testing..." )

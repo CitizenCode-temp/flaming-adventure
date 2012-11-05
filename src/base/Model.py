@@ -1,9 +1,12 @@
+import os
+import binascii as ba
+
 class Model:
-  def __init__(self):
-    self.id = "model-0"
+  def __init__(self,_id):
+    self._id = _id 
 
   def notify( self, event ):
     return True 
 
   def getId(self):
-    return self.id
+    return self._id

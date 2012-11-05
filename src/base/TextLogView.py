@@ -5,3 +5,6 @@ class TextLogView:
 
   def notify(self, event):
     print(event.getName())
+
+  def log(self, txt):
+    print(txt)
