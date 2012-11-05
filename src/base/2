@@ -1,0 +1,6 @@
+import EventManager
+import unittest
+
+class TestEventManager(unittest.TestCase):
+  def setUp(self):
+    self.ev_mgr = EventManger.EventManager()
