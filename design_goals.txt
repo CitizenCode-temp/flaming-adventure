@@ -13,24 +13,39 @@
 
 2.00 Code Design
 2.10 Visuals Engine
-2.20 MVC? Decomposition
-
-
-
-
-
-
-
+2.20 MVC Decomposition
+2.30 Event Passing
+2.40 Testing
 
 # 2.00 Code Design
   Buzzwords:
     MVC-style decomposition.
     Messenging/Event System.
-      - Observer python pattern?
 
 
-## 2.20 MVC? Decomposition
+## 2.20 MVC Decomposition
+   - Models are given. Store model data, no view contamination.
+   But logic is ok if placed right? Models communicate only through
+   event notification.
 
-  MVC is nice, I've used it before. Cons, might be easiest to use my own system?
-  Pro's MVC is nice out of the box.
+   - Collections are integral. A base collection class does a lot
+   of the heavy lifting. Collections pass events.
 
+   - Views store no model data. They often are listening for events.
+
+   - Controllers are usually singletons that juggle the object instances.
+   They can also perform heavy logic, or communicate to storage/databases.
+
+## 2.30 Event Passing
+   - Collections have a notify(event) method which calls .notify(event) on
+   all the collection's members. Hence you must have a .notify to join the
+   collection. (Or should)
+
+## 2.40 Testing
+    Testing should be used on every class in the game. As many methods as
+  possible should be tested for each class. To make things easy, the python
+  unittest module will be used.
+
+    If the class Class is stored in Class.py, Class_test.py should contain
+  the relevant unit test code (using unittest). Then, to run all the tests
+  in a directory, one can run `python -m unittest *.py`.

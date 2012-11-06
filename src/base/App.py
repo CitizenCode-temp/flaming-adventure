@@ -3,7 +3,6 @@ import Collection
 import InputController
 import AppStepper
 import Model
-import TextLogView
 import AppView
 import curses
 
@@ -30,5 +29,3 @@ def main():
 if __name__ == "__main__":
   main()
   
-
-
