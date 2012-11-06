@@ -1,7 +1,11 @@
 import Event
 import Collection
+import InputController
+import AppStepper
 import Model
 import TextLogView
+import AppView
+import curses
 
 class App:
   def __init__(self):
@@ -9,17 +13,19 @@ class App:
     self.appColl = Collection.Collection()
     self.appColl.add(self)
     
-    self.appView = TextLogView.TextLogView(self.appColl)
-    
-  def run(self):
-    self.appColl.notify( Event.Event() )
+  def run(self,screen):
+    self.inputController = InputController.InputController(screen, self.appColl)
+    self.appView = AppView.AppView(self, screen, self.appColl)
+    self.appStepper = AppStepper.AppStepper(self.appColl)
+
+    self.appStepper.run()
 
   def notify(self, event):
     return True
 
 def main():
   app = App()
-  app.run()
+  curses.wrapper( app.run )
 
 if __name__ == "__main__":
   main()
