@@ -1,4 +1,4 @@
-import Event
+import Events
 import Collection
 import InputController
 import unittest
@@ -11,7 +11,7 @@ class TestInputController(unittest.TestCase):
   def runTest(self):
     coll = Collection.Collection()
     
-    ev = Event.Event()
+    ev = Events.StepEvent()
     inputController = InputController.InputController(self.Screen(), coll)
 
     coll.add(inputController)

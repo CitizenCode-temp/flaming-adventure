@@ -1,5 +1,5 @@
 import Model
-import Event
+import Events
 import Collection
 import unittest
 
@@ -7,7 +7,7 @@ class TestCollection(unittest.TestCase):
   def runTest(self):
     self.coll = Collection.Collection()
     self.m = Model.Model("0")
-    self.ev = Event.Event()
+    self.ev = Events.Event()
 
     self.coll.add(self.m)
     self.assertIs(self.coll.getLength(),1)

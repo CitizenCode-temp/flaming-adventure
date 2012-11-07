@@ -1,9 +1,9 @@
-import Event
 import Collection
 import InputController
 import AppStepper
 import Model
 import AppView
+import EventScheduler
 import curses
 
 class App:
@@ -11,9 +11,12 @@ class App:
     # appColl -- used for application level event notification
     self.appColl = Collection.Collection()
     self.appColl.add(self)
+
+    self.timedColl = Collection.Collection()
     
   def run(self,screen):
     self.inputController = InputController.InputController(screen, self.appColl)
+    self.eventScheduler = EventScheduler.EventScheduler(self.appColl)
     self.appView = AppView.AppView(self, screen, self.appColl)
     self.appStepper = AppStepper.AppStepper(self.appColl)
 

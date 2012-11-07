@@ -22,6 +22,13 @@
     MVC-style decomposition.
     Messenging/Event System.
 
+## 2.10 Visuals Engine
+    The end goal doesn't need to be text-only terminal support, but
+  using a lightweight curses-based user-interface would speed dev
+  time and also increase the fun/time ratio.
+
+    Later on, once the application has matured or more power is needed,
+  pygame can be used or some other package.
 
 ## 2.20 MVC Decomposition
    - Models are given. Store model data, no view contamination.
