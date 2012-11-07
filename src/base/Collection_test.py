@@ -10,7 +10,7 @@ class TestCollection(unittest.TestCase):
     self.ev = Events.Event()
 
     self.coll.add(self.m)
-    self.assertIs(self.coll.getLength(),1)
+    self.assertIs(len(self.coll),1)
     self.coll.remove(self.m)
-    self.assertIs(len(self.coll.members),0)
+    self.assertIs(len(self.coll),0)
     self.coll.notify( self.ev )

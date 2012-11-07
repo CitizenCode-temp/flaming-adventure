@@ -1,10 +1,17 @@
-import os
-import Events
-import Collection
+"""
+  Collection
+
+    A collection provides an abstraction for working with sets of other objects.
+  One important role they play is forwarding Events to their members via the
+  notify function.
+"""
 
 class Collection:
   def __init__(self):
     self.members = []
+
+  def __len__(self):
+    return len( self.members )
 
   def add(self, obj):
     if (self.members.count(obj) == 0):
@@ -21,9 +28,6 @@ class Collection:
     for m in self.members:
       m.notify(event)
 
-  def getLength(self):
-    return len( self.members )
-    
 """
 class AppCollection:
   def __init__(self):

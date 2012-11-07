@@ -24,8 +24,7 @@ class StepEvent(Event):
 
 class QuitEvent(Event):
   """
-  A QuitEvent is fired by the InputController. This stops listening
-  AppSteppers.
+  This stops listening AppSteppers.
   """
   def __init__(self):
     self.name = "QuitEvent"
