@@ -13,7 +13,6 @@ class AppStepper:
 
   def notify(self, event):
     if isinstance(event, Events.QuitEvent):
-      print("\ngot quit event")
       self.keep_going = False
     return True
       

@@ -1,5 +1,6 @@
 import os
-import binascii as ba
+import Events
+import Collection
 
 class Collection:
   def __init__(self):
@@ -23,3 +24,15 @@ class Collection:
   def getLength(self):
     return len( self.members )
     
+"""
+class AppCollection:
+  def __init__(self):
+    self.add(self.modelCollection)
+    self.add(self.viewCollection)
+  
+  def notifyModels(self, event):
+    self.modelCollection.notify(event)
+
+  def notifyViews(self, event):
+    self.viewCollection.notify(event)
+"""
