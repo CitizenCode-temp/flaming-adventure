@@ -2,7 +2,7 @@ import Collection
 import InputController
 import AppStepper
 import Model
-import AppView
+import Views
 import EventScheduler
 import curses
 
@@ -20,7 +20,7 @@ class App:
     curses.echo()
     screen.scrollok(True)
     self.eventScheduler = EventScheduler.EventScheduler(self.appColl)
-    self.appView = AppView.AppView(self, screen, self.appColl)
+    self.appView = Views.AppView(self, screen, self.appColl)
     self.inputController = InputController.InputController(self.appView.getCmdLineView(), self.appColl)
     self.appStepper = AppStepper.AppStepper(self.appColl)
 

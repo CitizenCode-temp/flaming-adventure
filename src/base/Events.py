@@ -28,3 +28,13 @@ class QuitEvent(Event):
   """
   def __init__(self):
     self.name = "QuitEvent"
+
+class InputEvent(Event):
+  """
+  This event is triggered when the CmdLineView gets an input string.
+  """
+  def __init__(self, inputStr=""):
+    self.inputStr = inputStr
+
+  def getInputStr(self):
+    return self.inputStr

@@ -21,20 +21,13 @@ class AppView:
     self.cmdLine = self.createCmdLineWindow(3)
     self.viewCollection.add(self.cmdLine)
 
-  def createCmdLineWindow(self, height):
-    windowHeight = self.screen.getmaxyx()[0]
-    windowWidth = self.screen.getmaxyx()[1]
-    cmdLine = curses.newwin(height, windowWidth, windowHeight-height, 0) 
-    cmdLine.scrollok(True)
-    return cmdLine
-
   def refresh(self):
     self.cmdLine.scroll(-1)
     self.screen.refresh()
 
   def notify(self, event):
     if isinstance(event, Events.StepEvent):
-      self.refresh()
+      self.viewCollection.notify(event)
 
   def getCmdLineView(self):
     return self.cmdLine

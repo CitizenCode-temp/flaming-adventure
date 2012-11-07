@@ -9,10 +9,11 @@ class InputController:
     self.cmdHistory = []
 
   def notify(self, event):
-    if isinstance(event, Events.StepEvent):
-      # Data comes in as bytes
-      string = self.screen.getstr(0,0,80).decode()
-      self.cmdHistory.append(string)
-      if string == "quit":
-        self.appCollection.notify( Events.QuitEvent() )
-    return True
+    if isinstance(event, Events.InputEvent):
+      self.parseCmd( event.getInputStr() )
+
+  def parseCmd(self, cmd):
+     self.cmdHistory.append(cmd)
+     if cmd == "quit":
+       self.appCollection.notify( Events.QuitEvent() )
+
