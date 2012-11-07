@@ -1,5 +1,20 @@
 import Events
 
+"""
+  EventScheduler
+
+    This keeps an internal array of Events and an associated delay time.
+  Every time a StepEvent is caught it calls doTurn() and does turnLength's
+  worth of 'times' tasks.
+
+  Assuming turnLength = 1.0
+  queue: [0.1, ThisTurnEvent], [1.2, NextTurnEvent], [3.0 LongTimeEvent], ...
+
+  addEvent( event, delayTime ) - Add an event to the queue
+  getEvent() - Pop the 0th tuple off the queue and return the event
+  doTurn() - Do turnLength's worth of events (notify the appCollection)
+             Should probably be only internally used.
+"""
 class EventScheduler:
   def __init__(self, appCollection):
     self.queue = []
