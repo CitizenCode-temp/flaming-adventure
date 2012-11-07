@@ -9,7 +9,7 @@ class InputController:
 
   def notify(self, event):
     if isinstance(event, Events.StepEvent):
-      ch_input = self.screen.getch()
+      ch_input = self.screen.getkey()
       if ch_input == 'q':
         self.appCollection.notify( Events.QuitEvent() )
     return True

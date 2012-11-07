@@ -15,9 +15,9 @@ class App:
     self.timedColl = Collection.Collection()
     
   def run(self,screen):
-    self.inputController = InputController.InputController(screen, self.appColl)
     self.eventScheduler = EventScheduler.EventScheduler(self.appColl)
     self.appView = AppView.AppView(self, screen, self.appColl)
+    self.inputController = InputController.InputController(screen, self.appColl)
     self.appStepper = AppStepper.AppStepper(self.appColl)
 
     self.appStepper.run()
