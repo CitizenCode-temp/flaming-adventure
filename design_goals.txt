@@ -4,12 +4,20 @@
 #
 
 1.00 User Experience
-1.10 Roguelike Traits
-1.20 Map and World
-1.30 Crafting Traits
-1.40 Dynamic Environment
-1.50 Database Connectivity
-1.60 Multiplayer World
+1.10 View Geometry 
+1.20 Roguelike Traits
+1.30 Map and World
+1.40 Crafting Traits
+1.50 Dynamic Environment
+1.60 Database Connectivity
+1.70 Multiplayer World    
+
+# 1.00 User Experience
+
+## 1.10 View Geometry
+     For a curses-based program, a two or three pane layout may be best.
+   One pane could be designated primarily for user input, another for
+   'rendered' game/ascii art, and perhaps a third for user status.
 
 2.00 Code Design
 2.10 Visuals Engine
@@ -28,14 +36,17 @@
   time and also increase the fun/time ratio.
 
     Later on, once the application has matured or more power is needed,
-  pygame can be used or some other package.
+  pygame can be used or some other package. The user input (curses) and 
+  graphics output (curses) dealing classes should be written in a manner
+  that will later easily abstract to a generic graphics layer for the
+  game, thereby supporting multiple graphics options.
 
 ## 2.20 MVC Decomposition
    - Models are given. Store model data, no view contamination.
    But logic is ok if placed right? Models communicate only through
    event notification.
 
-   - Collections are integral. A base collection class does a lot
+   - Collections are integral. A base collection object does a lot
    of the heavy lifting. Collections pass events.
 
    - Views store no model data. They often are listening for events.
@@ -46,7 +57,7 @@
 ## 2.30 Event Passing
    - Collections have a notify(event) method which calls .notify(event) on
    all the collection's members. Hence you must have a .notify to join the
-   collection. (Or should)
+   collection.
 
 ## 2.40 Testing
     Testing should be used on every class in the game. As many methods as
