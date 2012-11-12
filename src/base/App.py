@@ -2,6 +2,7 @@ import Collection
 import InputController
 import AppStepper
 import Model
+import Events
 import Views
 import EventScheduler
 import curses
@@ -27,7 +28,8 @@ class App:
     self.appStepper.run()
 
   def notify(self, event):
-    return True
+    if isinstance(event, Events.QuitEvent):
+      exit()
 
 def main():
   app = App()
