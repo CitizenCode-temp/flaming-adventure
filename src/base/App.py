@@ -28,8 +28,7 @@ class App:
     self.appStepper.run()
 
   def notify(self, event):
-    if isinstance(event, Events.QuitEvent):
-      exit()
+    return True
 
 def main():
   app = App()
