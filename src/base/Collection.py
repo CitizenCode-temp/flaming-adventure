@@ -28,15 +28,10 @@ class Collection:
     for m in self.members:
       m.notify(event)
 
-"""
-class AppCollection:
+class AppCollection(Collection):
   def __init__(self):
-    self.add(self.modelCollection)
-    self.add(self.viewCollection)
+    self.members = []
+    self.mapCollection = Collection() 
   
-  def notifyModels(self, event):
-    self.modelCollection.notify(event)
-
-  def notifyViews(self, event):
-    self.viewCollection.notify(event)
-"""
+  def notifyMaps(self, event):
+    self.mapCollection.notify(event)

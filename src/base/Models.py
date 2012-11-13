@@ -9,3 +9,7 @@ class Model:
 
   def getId(self):
     return self._id
+
+class Map(Model):
+  def notify(self, event):
+    return True
