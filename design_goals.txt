@@ -19,6 +19,16 @@
    One pane could be designated primarily for user input, another for
    'rendered' game/ascii art, and perhaps a third for user status.
 
+     CmdLineView offers an echo for user typed-strings. It also triggers
+   InputEvents, whose data is the typed strings. It provides a few lines
+   for displaying current and previous user input. I couldn't get
+   scrolling in the other direction to work.
+
+     StatusView is an area of lines for displaying information about the
+   player as well as application responses/logging.
+
+     WorldView is the main area for 'rending' the game world. (Contains MapView?)
+
 2.00 Code Design
 2.10 Visuals Engine
 2.20 MVC Decomposition
