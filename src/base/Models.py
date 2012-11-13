@@ -11,5 +11,11 @@ class Model:
     return self._id
 
 class Map(Model):
+  def __init__(self, _id):
+      self._id = _id
+
   def notify(self, event):
     return True
+
+  def getStrRep(self):
+    return "."

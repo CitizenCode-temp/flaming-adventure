@@ -5,6 +5,7 @@
   One important role they play is forwarding Events to their members via the
   notify function.
 """
+import Models
 
 class Collection:
   def __init__(self):
@@ -20,7 +21,7 @@ class Collection:
   def remove(self, obj):
     self.members.remove(obj)
 
-  def forEach(func):
+  def forEach(self, func):
     for m in self.members:
       func(m)
 
@@ -31,7 +32,16 @@ class Collection:
 class AppCollection(Collection):
   def __init__(self):
     self.members = []
-    self.mapCollection = Collection() 
+    self.mapCollection = MapCollection() 
   
   def notifyMaps(self, event):
     self.mapCollection.notify(event)
+
+class MapCollection(Collection):
+  def __init__(self):
+    self.members = [ self.getInitialMap() ]
+    self.currentMap = self.members[0]
+
+  def getInitialMap(self):
+    firstMap = Models.Map("model0")
+    return firstMap
