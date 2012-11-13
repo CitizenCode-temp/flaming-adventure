@@ -1,8 +1,8 @@
 import Events
-import Model
+import Models
 import unittest
 
-class TestModel(unittest.TestCase):
+class TestModels(unittest.TestCase):
   def runTest(self):
     self.model = Model.Model("zero")
     self.model.getId()
