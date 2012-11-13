@@ -1,11 +1,11 @@
 import Model
 import Events
-import Collection
+import Collections
 import unittest
 
 class TestCollection(unittest.TestCase):
   def runTest(self):
-    self.coll = Collection.Collection()
+    self.coll = Collections.Collection()
     self.m = Model.Model("0")
     self.ev = Events.Event()
 

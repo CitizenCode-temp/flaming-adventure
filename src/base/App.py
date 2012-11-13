@@ -1,4 +1,4 @@
-import Collection
+import Collections
 import InputController
 import AppStepper
 import Models
@@ -10,7 +10,7 @@ import curses
 class App:
   def __init__(self):
     # appColl -- used for application level event notification
-    self.appColl = Collection.AppCollection()
+    self.appColl = Collections.AppCollection()
     self.appColl.add(self)
     
   def run(self,screen):

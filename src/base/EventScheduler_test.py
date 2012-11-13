@@ -1,5 +1,5 @@
 import unittest
-import Collection as col
+import Collections as col
 import Events
 import EventScheduler as ts
 

@@ -1,5 +1,5 @@
 import curses
-import Collection
+import Collections
 import Events
 """
   View
@@ -40,7 +40,7 @@ class AppView(View):
     statusHeight = 3
     mapHeight = windowHeight - cmdLineHeight - statusHeight
     
-    self.viewCollection = Collection.Collection()
+    self.viewCollection = Collections.Collection()
     self.mapView = MapView(mapHeight, windowWidth, self.appCollection, self.viewCollection)
     self.statusView = StatusView(statusHeight, (windowHeight - cmdLineHeight), windowWidth, self.appCollection, self.viewCollection)
     self.cmdLineView = CmdLineView(cmdLineHeight, windowHeight, windowWidth, self.appCollection, self.viewCollection)

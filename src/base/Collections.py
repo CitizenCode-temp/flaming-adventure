@@ -32,13 +32,14 @@ class Collection:
 class AppCollection(Collection):
   def __init__(self):
     self.members = []
-    self.mapCollection = MapCollection() 
+    self.mapCollection = MapCollection(self) 
   
   def notifyMaps(self, event):
     self.mapCollection.notify(event)
 
 class MapCollection(Collection):
-  def __init__(self):
+  def __init__(self, appCollection):
+    self.appCollection = appCollection
     self.members = [ self.getInitialMap() ]
     self.currentMap = self.members[0]
 
