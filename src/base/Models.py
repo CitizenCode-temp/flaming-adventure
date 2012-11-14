@@ -24,7 +24,7 @@ class Player(Model):
   def __init__(self, _id):
       self._id = _id
       self.name = "Flarg"
-      self.health = 10
+      self.health = 10.0
 
   def notify(self, event):
     return True
@@ -38,5 +38,5 @@ class Player(Model):
   def getHealth(self):
     return self.health
 
-  def setHealth(self, name):
-    self.name = name
+  def setHealth(self, health):
+    self.health = health

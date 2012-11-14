@@ -16,5 +16,16 @@ class TestModels(unittest.TestCase):
     self.mapModel.notify( Events.Event() ) 
     self.mapModel.getStrRep()
 
+  def testPlayer(self):
+    self.player = Models.Player("player_0")
+    self.player.getId()
+    self.player.notify( Events.Event() ) 
+    self.player.getName()
+    self.player.setName("Bill")
+    self.assertIs(self.player.getName(),"Bill")
+    self.player.getHealth()
+    self.player.setHealth(5.00)
+    self.assertIs(self.player.getHealth(),5.00)
+
 
   
