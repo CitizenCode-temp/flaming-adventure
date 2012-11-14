@@ -10,5 +10,11 @@ class TestModels(unittest.TestCase):
     self.model.getId()
     self.model.notify( Events.Event() ) 
 
+  def testMap(self):
+    self.mapModel = Models.Map("model_0")
+    self.mapModel.getId()
+    self.mapModel.notify( Events.Event() ) 
+    self.mapModel.getStrRep()
+
 
   
