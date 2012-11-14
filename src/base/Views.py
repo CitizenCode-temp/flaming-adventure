@@ -84,9 +84,9 @@ class CmdLineView(CursesView):
 
 class StatusView(CursesView):
   def refresh(self):
-    self.screen.addstr(0,0,"Character Info")
-    self.screen.addstr(1,0,"Character Info")
-    self.screen.addstr(2,0,"Character Info")
+    self.screen.addstr(0,0,"Kyle Lvl 37 | A5 D3 S1 | HP 25/30")
+    self.screen.addstr(1,0,"Sorry, I didn't recognize that command.")
+    self.screen.addstr(2,0,"The imp missed!")
     self.screen.refresh()
 
 class MapView(CursesView):
