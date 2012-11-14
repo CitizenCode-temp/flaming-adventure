@@ -10,7 +10,8 @@ import curses
 class App:
   def __init__(self):
     # appColl -- used for application level event notification
-    self.appColl = Collections.AppCollection()
+    self.player = Models.Player("player0")
+    self.appColl = Collections.AppCollection(self.player)
     self.appColl.add(self)
     
   def run(self,screen):

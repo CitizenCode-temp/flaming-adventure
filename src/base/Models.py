@@ -23,7 +23,7 @@ class Map(Model):
 class Player(Model):
   def __init__(self, _id):
       self._id = _id
-      self.name = ""
+      self.name = "Flarg"
       self.health = 10
 
   def notify(self, event):
@@ -36,7 +36,7 @@ class Player(Model):
     self.name = name
 
   def getHealth(self):
-    return self.name
+    return self.health
 
   def setHealth(self, name):
     self.name = name

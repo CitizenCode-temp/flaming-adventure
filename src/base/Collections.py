@@ -30,12 +30,16 @@ class Collection:
       m.notify(event)
 
 class AppCollection(Collection):
-  def __init__(self):
+  def __init__(self, player):
     self.members = []
     self.mapCollection = MapCollection(self) 
+    self.player = player
   
   def notifyMaps(self, event):
     self.mapCollection.notify(event)
+
+  def getPlayer(self):
+    return self.player
 
 class MapCollection(Collection):
   def __init__(self, appCollection):
