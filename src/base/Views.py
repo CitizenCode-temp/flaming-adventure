@@ -96,9 +96,35 @@ class MapView(CursesView):
     self.screen = curses.newwin(height, windowWidth, 0, 0) 
     self.screen.scrollok(True)
     self.appCollection = appCollection
+    self.mapCollection = self.appCollection.getMapCollection()
+    self.viewCollection = viewCollection
+    self.viewCollection.add(self)
+
+    self.playerView = PlayerView(self.screen, appCollection, viewCollection)
+
+  def refresh(self):
+    self.refreshMap()
+    self.playerView.refresh()
+    self.screen.refresh()
+
+  def refreshMap(self):
+    currMap = self.mapCollection.getCurrentMap()
+    mapArr = currMap.getMapArray()
+    for x in range(currMap.getWidth()):
+      for y in range(currMap.getHeight()):
+        self.screen.addstr(y, x, mapArr[x][y].getStrRep())
+
+class PlayerView(View):
+  def __init__(self, screen, appCollection, viewCollection):
+    self.screen = screen
+    self.appCollection = appCollection
+    self.player = appCollection.getPlayer()
     self.viewCollection = viewCollection
     self.viewCollection.add(self)
 
   def refresh(self):
-    self.screen.addstr(0,0,"I'm a map.")
-    self.screen.refresh()
+    x, y = self.player.getXY()
+    self.screen.addstr(y,x,"@")
+
+  def notify(self,event):
+    return True

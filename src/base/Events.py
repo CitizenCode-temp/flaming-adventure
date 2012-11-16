@@ -38,3 +38,17 @@ class InputEvent(Event):
 
   def getInputStr(self):
     return self.inputStr
+
+class MoveEvent(Event):
+  """
+  Fired when a keyboard movement is detected.
+  """
+  def __init__(self,Dx=0,Dy=0):
+    self.Dx = Dx
+    self.Dy = Dy
+
+  def getDx(self):
+    return self.Dx
+
+  def getDy(self):
+    return self.Dy

@@ -34,12 +34,17 @@ class AppCollection(Collection):
     self.members = []
     self.mapCollection = MapCollection(self) 
     self.player = player
+    self.player.setAppCollection( self )
+    self.add( player )
   
   def notifyMaps(self, event):
     self.mapCollection.notify(event)
 
   def getPlayer(self):
     return self.player
+
+  def getMapCollection(self):
+    return self.mapCollection
 
 class MapCollection(Collection):
   def __init__(self, appCollection):
@@ -50,3 +55,6 @@ class MapCollection(Collection):
   def getInitialMap(self):
     firstMap = Models.Map("model0")
     return firstMap
+
+  def getCurrentMap(self):
+    return self.currentMap
