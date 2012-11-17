@@ -32,10 +32,10 @@ class Collection:
 class AppCollection(Collection):
   def __init__(self, player):
     self.members = []
-    self.mapCollection = MapCollection(self) 
     self.player = player
     self.player.setAppCollection( self )
     self.add( player )
+    self.mapCollection = MapCollection(self) 
   
   def notifyMaps(self, event):
     self.mapCollection.notify(event)

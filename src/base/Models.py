@@ -26,6 +26,12 @@ class Map(Model):
 
     return mapArray
 
+  def checkIfContains(self, x, y):
+    if (x >= 0 and x < self.getWidth() and y >=0 and y < self.getHeight()):
+      return True
+    else:
+      return False
+
   def getMapArray(self):
     return self.mapArray
 
@@ -62,8 +68,11 @@ class Player(Model):
     return True
 
   def mvPlayer(self, mvEvent):
-    self.x = self.x + mvEvent.getDx()
-    self.y = self.y + mvEvent.getDy()
+    x = self.x + mvEvent.getDx()
+    y = self.y + mvEvent.getDy()
+    if( self.appCollection.getMapCollection().getCurrentMap().checkIfContains(x,y) ):
+      self.x = x
+      self.y = y
 
   def getName(self):
     return self.name
