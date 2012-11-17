@@ -53,6 +53,8 @@ class AppView(View):
   def notify(self, event):
     if isinstance(event, Events.StepEvent):
       self.viewCollection.notify(event)
+    if isinstance(event, Events.LogMsgEvent):
+      self.statusView.logMsg( event.getMsg() )
 
   def getCmdLineView(self):
     return self.cmdLineView
@@ -83,13 +85,38 @@ class CmdLineView(CursesView):
       self.appCollection.notify(ev)
 
 class StatusView(CursesView):
+  def __init__(self, height, windowHeight, windowWidth, appCollection, viewCollection):
+    self.screen = curses.newwin(height, windowWidth, windowHeight-height, 0) 
+    self.screen.scrollok(True)
+    self.appCollection = appCollection
+    self.viewCollection = viewCollection
+    self.viewCollection.add(self)
+    self.msgLog = []
+
   def refresh(self):
+    self.screen.clear() 
+
     name = self.appCollection.getPlayer().getName()
-    health = str( self.appCollection.getPlayer().getHealth() )
-    self.screen.addstr(0,0, name + " Lvl 37 | A5 D3 S1 | HP " + health)
-    self.screen.addstr(1,0,"Sorry, I didn't recognize that command.")
-    self.screen.addstr(2,0,"The imp missed!")
+    hp = str( self.appCollection.getPlayer().getHealth() )
+    maxHp = str( self.appCollection.getPlayer().getMaxHealth() )
+    level = str( self.appCollection.getPlayer().getLevel() )
+
+    self.screen.addstr(0,0, name + " Lvl " + level + " | A5 D3 S1 | HP " + hp + "/" + maxHp)
+
+    if (len( self.msgLog ) > 0):
+      self.screen.addstr(1,0,self.msgLog[0])
+    else:
+      self.screen.addstr(1,0,"")
+
+    if (len( self.msgLog ) > 1):
+      self.screen.addstr(2,0,self.msgLog[1])
+    else:
+      self.screen.addstr(2,0,"")
+
     self.screen.refresh()
+
+  def logMsg(self, msg):
+    self.msgLog.insert(0,msg)
 
 class MapView(CursesView):
   def __init__(self, height, windowWidth, appCollection, viewCollection):

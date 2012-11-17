@@ -52,3 +52,10 @@ class MoveEvent(Event):
 
   def getDy(self):
     return self.Dy
+ 
+class LogMsgEvent(Event):
+  def __init__(self, msg):
+    self.msg = msg
+
+  def getMsg(self):
+    return self.msg
