@@ -20,7 +20,7 @@ class StepEvent(Event):
   A StepEvent is fired by the AppStepper for each turn (step). 
   """
   def __init__(self):
-    self.name = "TickEvent"
+    self.name = "StepEvent"
 
 class QuitEvent(Event):
   """
@@ -34,6 +34,7 @@ class InputEvent(Event):
   This event is triggered when the CmdLineView gets an input string.
   """
   def __init__(self, inputStr=""):
+    self.name = "InputEvent"
     self.inputStr = inputStr
 
   def getInputStr(self):
@@ -44,6 +45,7 @@ class MoveEvent(Event):
   Fired when a keyboard movement is detected.
   """
   def __init__(self,Dx=0,Dy=0):
+    self.name = "MoveEvent"
     self.Dx = Dx
     self.Dy = Dy
 
@@ -55,6 +57,7 @@ class MoveEvent(Event):
  
 class LogMsgEvent(Event):
   def __init__(self, msg):
+    self.name = "LogMsgEvent"
     self.msg = msg
 
   def getMsg(self):
