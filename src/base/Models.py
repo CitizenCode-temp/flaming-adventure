@@ -42,15 +42,6 @@ class Map(Model):
   def getHeight(self):
     return self.size
 
-class MapSector(Model):
-  def __init__(self, _id):
-    self._id = _id
-    self.strRep = "."
-
-  def getStrRep(self):
-    return self.strRep
-
-
 class Player(Model):
   def __init__(self, _id):
       self._id = _id
