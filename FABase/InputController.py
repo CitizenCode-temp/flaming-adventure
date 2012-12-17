@@ -2,7 +2,7 @@ import os, sys
 lib_path = os.path.abspath('..')
 sys.path.append(lib_path)
 
-import parser.kadvParser as kp
+import FAParser.kadvParser as kp
 import curses
 import Events
 
