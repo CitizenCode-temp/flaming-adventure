@@ -1,3 +1,9 @@
+import os, sys
+lib_path = os.path.abspath('../parser')
+sys.path.append(lib_path)
+
+
+import cmdParser
 import curses
 import Events
 
@@ -13,6 +19,9 @@ class InputController:
       self.parseCmd( event.getInputStr() )
 
   def parseCmd(self, cmd):
+    cmdParser.parse(cmd)
+"""
+  def parseCmd(self, cmd):
      cmdArr = cmd.split(" ")
      self.cmdHistory.append(cmd)
      if len( cmdArr  ) > 0:
@@ -25,3 +34,4 @@ class InputController:
        if cmdArr[0] == "go":
          mvEvent = Events.MoveEvent(int(cmdArr[1]), int(cmdArr[2]))
          self.appCollection.notify( mvEvent )
+"""
