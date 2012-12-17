@@ -12,30 +12,38 @@ class kadvParser:
     self.tokens = self.kLex.tokens
     self.parser = yacc.yacc(module=self)
     self.inputController = inputController
-    
+  
   # Parsing rules
   precedence = (
-      ('nonassoc','LOG'),
-      ('right','STRING'),
-      )
+    ('nonassoc','LOG'),
+#    ('nonassoc','INSPECT'),
+    ('right','STRING'),
+    ('nonassoc','QUIT'),
+#    ('right','ME'),
+    )
 
-  def p_expression_say(self,p):
-      "expression : LOG expression"
-      self.inputController.log( p[2] )
+  def p_expr_log(self,p):
+    "command : LOG expression"
+    self.inputController.log( p[2] )
 
-  def p_words_expression(self,p):
-      "expression : expression STRING"
-      p[0] = p[1] + " " + p[2]
+  def p_expr_words(self,p):
+    "expression : expression STRING"
+    p[0] = p[1] + " " + p[2]
 
-  def p_string_expression(self,p):
-      "expression : STRING"
-      p[0] = p[1]
+  def p_expr_string(self,p):
+    "expression : STRING"
+    p[0] = p[1]
+
+  def p_expr_quit(self,p):
+    "command : QUIT"
+    self.inputController.quit()
+    p[0] = "Quit string recieved..."
 
   def p_error(self,p):
-      if p:
-          print("Syntax error at " + p.value)
-      else:
-          print("Syntax error at EOF")
+    if p:
+      print("Syntax error at " + p.value)
+    else:
+      print("Syntax error at EOF")
 
 if __name__ == "__main__":
   kp = kadvParser()
@@ -43,4 +51,3 @@ if __name__ == "__main__":
     s = input("kadv: ")
     if not s: continue 
     kp.parser.parse(s)
-

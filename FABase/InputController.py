@@ -24,6 +24,10 @@ class InputController:
   def log( self, text ):
     logEvent = Events.LogMsgEvent( text )
     self.appCollection.notify( logEvent )
+
+  def quit( self ):
+    self.appCollection.notify( Events.QuitEvent() )
+
 """
   def parseCmd(self, cmd):
      cmdArr = cmd.split(" ")
@@ -34,7 +38,6 @@ class InputController:
          self.appCollection.notify( mvEvent )
 
        if cmdArr[0] == "quit":
-         self.appCollection.notify( Events.QuitEvent() )
        if cmdArr[0] == "go":
          mvEvent = Events.MoveEvent(int(cmdArr[1]), int(cmdArr[2]))
          self.appCollection.notify( mvEvent )

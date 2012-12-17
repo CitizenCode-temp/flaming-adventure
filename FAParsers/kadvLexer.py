@@ -10,6 +10,9 @@ class kadvLexer:
 
   reserved = { 
     'log' : 'LOG',
+    'quit' : 'QUIT'
+    #'inspect' : 'INSPECT',
+   # 'me' : 'ME'
     }
 
   tokens = [
