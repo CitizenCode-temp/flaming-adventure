@@ -2,7 +2,7 @@ import os, sys
 lib_path = os.path.abspath('..')
 sys.path.append(lib_path)
 
-import FAParser.kadvParser as kp
+import FAParsers.kadvParser as kp
 import curses
 import Events
 
@@ -11,7 +11,7 @@ class InputController:
     self.screen = screen
     self.appCollection = appCollection
     self.appCollection.add(self)
-    self.parser = kp.kadvParser(self)
+    self.parser = kp.kadvParser(self).parser
     self.cmdHistory = []
 
   def notify(self, event):
@@ -21,7 +21,7 @@ class InputController:
   def parseCmd(self, cmd):
     self.parser.parse(cmd)
 
-  def log( text ):
+  def log( self, text ):
     logEvent = Events.LogMsgEvent( text )
     self.appCollection.notify( logEvent )
 """
