@@ -16,7 +16,8 @@ class kadvLexer:
     }
 
   tokens = [
-    'STRING'
+    'STRING',
+    'DBLQUOTE'
     ] + list(reserved.values())
 
   # Tokens
@@ -25,6 +26,8 @@ class kadvLexer:
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     t.type = self.reserved.get(t.value,'STRING')
     return t
+
+  t_DBLQUOTE = "\""
 
   t_ignore = " \t"
 

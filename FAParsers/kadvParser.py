@@ -17,8 +17,8 @@ class kadvParser:
   precedence = (
     ('nonassoc','LOG'),
 #    ('nonassoc','INSPECT'),
-    ('right','STRING'),
     ('nonassoc','QUIT'),
+    ('right','STRING'),
 #    ('right','ME'),
     )
 
@@ -26,18 +26,30 @@ class kadvParser:
     "command : LOG expression"
     self.inputController.log( p[2] )
 
-  def p_expr_words(self,p):
-    "expression : expression STRING"
+  def p_str_log(self,p):
+    "expression : LOG"
+    p[0] = "log"
+
+  def p_expr_words(self, p):
+    """
+    expression : expression STRING
+               | STRING expression
+               | expression expression
+    """
     p[0] = p[1] + " " + p[2]
 
   def p_expr_string(self,p):
     "expression : STRING"
     p[0] = p[1]
 
-  def p_expr_quit(self,p):
+  def p_command_quit(self,p):
     "command : QUIT"
     self.inputController.quit()
     p[0] = "Quit string recieved..."
+
+  def p_expr_quit(self,p):
+    "expression : QUIT"
+    p[0] = "quit"
 
   def p_error(self,p):
     if p:
