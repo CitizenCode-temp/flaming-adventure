@@ -21,11 +21,7 @@ class kadvParser:
 
   def p_expression_say(self,p):
       "expression : SAY expression"
-      """
-      mvEvent = Events.LogMsgEvent(str( p[2] ))
-      self.appCollection.notify( mvEvent )
-      """
-      print( p[2] )
+      self.inputController.log( p[2] )
 
   def p_words_expression(self,p):
       "expression : expression STRING"

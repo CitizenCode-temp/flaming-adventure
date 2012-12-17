@@ -11,7 +11,7 @@ class InputController:
     self.screen = screen
     self.appCollection = appCollection
     self.appCollection.add(self)
-    self.parser = kp.kadvParser()
+    self.parser = kp.kadvParser(self)
     self.cmdHistory = []
 
   def notify(self, event):
@@ -20,6 +20,10 @@ class InputController:
 
   def parseCmd(self, cmd):
     self.parser.parse(cmd)
+
+  def log( text ):
+    logEvent = Events.LogMsgEvent( text )
+    self.appCollection.notify( logEvent )
 """
   def parseCmd(self, cmd):
      cmdArr = cmd.split(" ")
