@@ -1,9 +1,8 @@
 import os, sys
-lib_path = os.path.abspath('../parser')
+lib_path = os.path.abspath('..')
 sys.path.append(lib_path)
 
-
-import cmdParser
+import parser.kadvParser as kp
 import curses
 import Events
 
@@ -12,6 +11,7 @@ class InputController:
     self.screen = screen
     self.appCollection = appCollection
     self.appCollection.add(self)
+    self.parser = kp.kadvParser()
     self.cmdHistory = []
 
   def notify(self, event):
@@ -19,7 +19,7 @@ class InputController:
       self.parseCmd( event.getInputStr() )
 
   def parseCmd(self, cmd):
-    cmdParser.parse(cmd)
+    self.parser.parse(cmd)
 """
   def parseCmd(self, cmd):
      cmdArr = cmd.split(" ")
