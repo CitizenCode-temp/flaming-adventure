@@ -15,12 +15,12 @@ class kadvParser:
     
   # Parsing rules
   precedence = (
-      ('nonassoc','SAY'),
+      ('nonassoc','LOG'),
       ('right','STRING'),
       )
 
   def p_expression_say(self,p):
-      "expression : SAY expression"
+      "expression : LOG expression"
       self.inputController.log( p[2] )
 
   def p_words_expression(self,p):

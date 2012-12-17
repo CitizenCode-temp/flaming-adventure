@@ -9,7 +9,7 @@ class kadvLexer:
     self.lexer = lex.lex(module=self)
 
   reserved = { 
-    'say' : 'SAY',
+    'log' : 'LOG',
     }
 
   tokens = [

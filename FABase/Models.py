@@ -14,7 +14,7 @@ class Model:
 class Map(Model):
   def __init__(self, _id):
     self._id = _id
-    self.size = 10
+    self.size = 3
     self.mapArray = self.makeMapArray(self.size)
 
   def makeMapArray(self, size):
