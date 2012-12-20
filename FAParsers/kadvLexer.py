@@ -10,9 +10,14 @@ class kadvLexer:
 
   states = ( ('string', 'exclusive'), ) 
 
-  tokens = [ 'LOG', 'STRING', ]
+  tokens = [ 'LOG', 'STRING', 'QUIT', ]
 
   # Tokens
+  
+  def t_quit(self, t):
+    r'quit'
+    t.type = 'QUIT'
+    return t
 
   def t_log(self, t):
     r'log'
@@ -26,7 +31,7 @@ class kadvLexer:
 
   def t_string_slashquote(self, t):
     r'\"'
-    # Do nothing
+    pass
 
   def t_string_quote(self, t):
     r'"'
@@ -34,6 +39,7 @@ class kadvLexer:
     t.type = "STRING"
     t.lexer.lineno += t.value.count('\n')
     t.lexer.begin('INITIAL')
+    print("string")
     return t
 
   def t_string_any(self, t):
@@ -41,13 +47,14 @@ class kadvLexer:
     pass
 
   def t_string_error(self, t):
-    print("Illegal character " + str(t.value))
+    print("(string) Illegal character " + t.value[0])
     t.lexer.skip(1)
 
   t_string_ignore = " \t"
+  t_ignore = " \t"
 
   def t_error(self,t):
-    print("Illegal character '%s'" % t.value[0])
+    print("(initial) Illegal character " + t.value[0])
     t.lexer.skip(1)
 
   def run_lexer(self, data):
@@ -62,10 +69,8 @@ class kadvLexer:
 
 if __name__ == "__main__":
   fal = kadvLexer()
-
-  def f(s):
-    print("\nlexing " + str( s ))
-    fal.run_lexer(s)
+  while True:
+    fal.run_lexer( input("kadv: ") )
 
   # ok
   f('log "this is a test"')
