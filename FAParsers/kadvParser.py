@@ -13,43 +13,22 @@ class kadvParser:
     self.parser = yacc.yacc(module=self)
     self.inputController = inputController
   
-  # Parsing rules
-  precedence = (
-    ('nonassoc','LOG'),
+# # Parsing rules
+# precedence = (
+#   #('nonassoc','QUIT'),
+#   ('left','LOG'),
 #    ('nonassoc','INSPECT'),
-    ('nonassoc','QUIT'),
-    ('right','STRING'),
+#   #('right','STRING'),
 #    ('right','ME'),
-    )
+#   )
 
   def p_expr_log(self,p):
-    "command : LOG expression"
+    "command : LOG STRING"
     self.inputController.log( p[2] )
 
-  def p_str_log(self,p):
-    "expression : LOG"
-    p[0] = "log"
-
-  def p_expr_words(self, p):
-    """
-    expression : expression STRING
-               | STRING expression
-               | expression expression
-    """
-    p[0] = p[1] + " " + p[2]
-
-  def p_expr_string(self,p):
-    "expression : STRING"
-    p[0] = p[1]
-
-  def p_command_quit(self,p):
-    "command : QUIT"
-    self.inputController.quit()
-    p[0] = "Quit string recieved..."
-
-  def p_expr_quit(self,p):
-    "expression : QUIT"
-    p[0] = "quit"
+# def p_command_quit(self,p):
+#   "command : QUIT"
+#   self.inputController.quit()
 
   def p_error(self,p):
     if p:
