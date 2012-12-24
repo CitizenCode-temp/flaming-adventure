@@ -1,6 +1,6 @@
-import Events
+import FAEvents
 
-class AppStepper:
+class FAAppStepper:
   def __init__(self,appCollection):
     self.keep_going = True
     self.appCollection = appCollection
@@ -8,11 +8,10 @@ class AppStepper:
 
   def run(self):
     while (self.keep_going):
-      event = Events.StepEvent()
+      event = FAEvents.StepEvent()
       self.appCollection.notify(event)
 
   def notify(self, event):
-    if isinstance(event, Events.QuitEvent):
+    if isinstance(event, FAEvents.QuitEvent):
       self.keep_going = False
     return True
-      

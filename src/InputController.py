@@ -1,19 +1,15 @@
-import os, sys
-lib_path = os.path.abspath('..')
-sys.path.append(lib_path)
+import FAParser
+import FAEvents
 
-import FAParsers.faParser as faParser
-import Events
-
-class InputController:
+class FAInputController:
   def __init__(self, appCollection):
     self.appCollection = appCollection
     self.appCollection.add(self)
-    self.parser = faParser.faParser(self, appCollection) 
+    self.parser = FAParser.faParser(self, appCollection) 
     self.cmdHistory = []
 
   def notify(self, event):
-    if isinstance(event, Events.InputEvent):
+    if isinstance(event, FAEvents.InputEvent):
       self.parse( event.getInputStr() )
 
   def parse(self, cmd):

@@ -1,4 +1,4 @@
 #!/bin/bash
 
-cd ./FABase
+cd ./src
 python -m App
