@@ -20,7 +20,7 @@ class App:
     self.appView = Views.AppView(self, screen, self.appColl)
 
     self.eventScheduler = EventScheduler.EventScheduler(self.appColl)
-    self.inputController = InputController.InputController(self.appView.getCmdLineView(), self.appColl)
+    self.inputController = InputController.InputController(self.appColl)
     self.appStepper = AppStepper.AppStepper(self.appColl)
 
     self.appStepper.run()
