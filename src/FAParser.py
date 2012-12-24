@@ -1,6 +1,6 @@
 import FAEvents
 
-class FAParser:
+class Parser:
   def __init__(self, inputController, appCollection):
     self.appCollection = appCollection
     self.inputController = inputController

@@ -1,6 +1,6 @@
 import FAEvents
 
-class FAAppStepper:
+class AppStepper:
   def __init__(self,appCollection):
     self.keep_going = True
     self.appCollection = appCollection

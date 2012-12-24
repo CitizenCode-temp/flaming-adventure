@@ -1,11 +1,11 @@
 import FAParser
 import FAEvents
 
-class FAInputController:
+class InputController:
   def __init__(self, appCollection):
     self.appCollection = appCollection
     self.appCollection.add(self)
-    self.parser = FAParser.faParser(self, appCollection) 
+    self.parser = FAParser.Parser(self, appCollection) 
     self.cmdHistory = []
 
   def notify(self, event):

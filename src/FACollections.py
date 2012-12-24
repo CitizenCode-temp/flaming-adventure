@@ -5,7 +5,7 @@
   One important role they play is forwarding Events to their members via the
   notify function.
 """
-import Models
+import FAModels
 
 class Collection:
   def __init__(self):
@@ -53,7 +53,7 @@ class MapCollection(Collection):
     self.currentMap = self.members[0]
 
   def getInitialMap(self):
-    firstMap = Models.Map("model0")
+    firstMap = FAModels.Map("model0")
     return firstMap
 
   def getCurrentMap(self):

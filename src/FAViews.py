@@ -1,6 +1,6 @@
 import curses
-import Collections
-import Events
+import FACollections
+import FAEvents
 """
   View
 """
@@ -16,7 +16,7 @@ class View:
     self.screen.refresh()
 
   def notify(self, event):
-    if isinstance(event, Events.StepEvent):
+    if isinstance(event, FAEvents.StepEvent):
       self.refresh()
 
 """
@@ -40,7 +40,7 @@ class AppView(View):
     statusHeight = 3
     mapHeight = windowHeight - cmdLineHeight - statusHeight
     
-    self.viewCollection = Collections.Collection()
+    self.viewCollection = FACollections.Collection()
     self.mapView = MapView(mapHeight, windowWidth, self.appCollection, self.viewCollection)
     self.statusView = StatusView(statusHeight, (windowHeight - cmdLineHeight), windowWidth, self.appCollection, self.viewCollection)
     self.cmdLineView = CmdLineView(cmdLineHeight, windowHeight, windowWidth, self.appCollection, self.viewCollection)
@@ -51,9 +51,9 @@ class AppView(View):
     self.cmdLineView.refresh()
 
   def notify(self, event):
-    if isinstance(event, Events.StepEvent):
+    if isinstance(event, FAEvents.StepEvent):
       self.viewCollection.notify(event)
-    if isinstance(event, Events.LogMsgEvent):
+    if isinstance(event, FAEvents.LogMsgEvent):
       self.statusView.logMsg( event.getMsg() )
 
   def getCmdLineView(self):
@@ -78,9 +78,9 @@ class CmdLineView(CursesView):
     self.screen.scroll(-1)
 
   def notify(self, event):
-    if isinstance(event, Events.StepEvent):
+    if isinstance(event, FAEvents.StepEvent):
       string = self.screen.getstr(0,0,80).decode()
-      ev = Events.InputEvent(string)
+      ev = FAEvents.InputEvent(string)
       self.refresh()
       self.appCollection.notify(ev)
 

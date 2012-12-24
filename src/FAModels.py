@@ -1,5 +1,5 @@
-import Events
-import Collections
+import FAEvents
+import FACollections
 
 class Model:
   def __init__(self,_id):
@@ -22,7 +22,7 @@ class Map(Model):
     for x in range(size):
       mapColumn = []
       for y in range(size):
-        mapColumn.append( Collections.MapSector("msector-" + str(x) + "-" + str(y)) )
+        mapColumn.append( FACollections.MapSector("msector-" + str(x) + "-" + str(y)) )
       mapArray.append(mapColumn)
 
     return mapArray
@@ -65,7 +65,7 @@ class Player(Model):
     self.appCollection = appCollection
 
   def notify(self, event):
-    if isinstance(event, Events.MoveEvent):
+    if isinstance(event, FAEvents.MoveEvent):
       self.mvPlayer( event )
 
     return True
@@ -76,7 +76,7 @@ class Player(Model):
     if( self.appCollection.getMapCollection().getCurrentMap().checkIfContains(x,y) ):
       self.x = x
       self.y = y
-      self.appCollection.notify( Events.LogMsgEvent("You moved!") )
+      self.appCollection.notify( FAEvents.LogMsgEvent("You moved!") )
 
   def getName(self):
     return self.name

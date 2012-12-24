@@ -7,7 +7,7 @@ import FAViews
 import FAEventScheduler
 import curses
 
-class FAApp:
+class App:
   def __init__(self):
     # appColl -- used for application level event notification
     self.player = FAModels.Player("player0")
@@ -29,7 +29,7 @@ class FAApp:
     return True
 
 def main():
-  app = FAApp()
+  app = App()
   curses.wrapper( app.run )
 
 if __name__ == "__main__":
