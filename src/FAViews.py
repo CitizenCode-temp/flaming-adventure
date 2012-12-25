@@ -54,7 +54,8 @@ class AppView(View):
   def refresh(self):
     self.mapView.refresh()
     self.statusView.refresh()
-    self.cmdLineView.refresh()
+    # Don't refresh cmdLineView
+    #self.cmdLineView.refresh()
     return True
     
   def getCmdLineView(self):
@@ -81,9 +82,6 @@ class CursesView(View):
     return True
 
 class CmdLineView(CursesView):
-  def refresh(self):
-    self.screen.scroll(-1)
-
   def getCh(self):
     curses.noecho()
     char = self.screen.getch(0,0) # Get the command, off the screen!
@@ -92,6 +90,7 @@ class CmdLineView(CursesView):
 
   def getStrCmd(self):
     string = self.screen.getstr(0,0,80).decode()
+    self.screen.scroll(-1)
     return string
 
 class StatusView(CursesView):

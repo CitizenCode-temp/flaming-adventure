@@ -41,9 +41,7 @@ class Player(Model):
   def mvPlayer(self, mvEvent):
     x = self.x + mvEvent.getDx()
     y = self.y + mvEvent.getDy()
-    if( self.appCollection.getMapCollection().getCurrentMap().checkIfContains(x,y) ):
-      self.x = x
-      self.y = y
+    [self.x, self.y] = self.appCollection.getMapCollection().getCurrentMap().movePlayer(self, x, y)
 
   def getName(self):
     return self.name
@@ -59,3 +57,7 @@ class Player(Model):
 
   def getXY(self):
     return [self.x, self.y]
+
+  def setXY(self, x, y):
+    self.x = x
+    self.y = y

@@ -35,7 +35,7 @@ class AppCollection(Collection):
     self.player = player
     self.player.setAppCollection( self )
     self.add( player )
-    self.mapCollection = MapCollection(self) 
+    self.mapCollection = MapCollection(self, player) 
   
   def notifyMaps(self, event):
     self.mapCollection.notify(event)
@@ -47,14 +47,15 @@ class AppCollection(Collection):
     return self.mapCollection
 
 class MapCollection(Collection):
-  def __init__(self, appCollection):
+  def __init__(self, appCollection, player):
     self.appCollection = appCollection
     self.mapCreator = FAMap.MapCreator()
-    self.members = [ self.getInitialMap() ]
+    self.members = [ self.getInitialMap( player ) ]
     self.currentMap = self.members[0]
 
-  def getInitialMap(self):
+  def getInitialMap(self, player):
     firstMap = self.mapCreator.createMap("map-0")
+    firstMap.insertPlayer( player )
     return firstMap
 
   def getCurrentMap(self):

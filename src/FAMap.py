@@ -31,7 +31,27 @@ class Map(FAModels.Model):
     self._id = _id
     self.mapSectorArray = mapSectorArray
 
-  def checkIfContains(self, x, y):
+  def insertPlayer(self, player):
+    x = 9 
+    y = 9
+    ms = self.mapSectorArray[x][y]
+    ms.addCharacter( player )
+    player.setXY(x,y)
+
+  def movePlayer(self, player, x, y):
+    if not self.isPassable( x, y ):
+      return player.getXY() 
+    [plX, plY] = player.getXY() 
+    self.mapSectorArray[plX][plY].removeCharacter( player )
+    self.mapSectorArray[x][y].addCharacter( player )
+    return [x, y]
+
+  def isPassable(self, x, y):
+    if not self.contains(x, y):
+      return False
+    return self.mapSectorArray[x][y].isPassable()
+
+  def contains(self, x, y):
     if (x >= 0 and x < self.getWidth() and y >=0 and y < self.getHeight()):
       return True
     else:
@@ -59,6 +79,15 @@ class MapSector(FAModels.Model):
 
   def getStrRep(self):
     return self.strRep
+
+  def isPassable(self):
+    return self.passable
+
+  def removeCharacter(self, charObj):
+    self.characters.remove(charObj)
+
+  def addCharacter(self, charObj):
+    self.characters.add(charObj)
 
 class WallMapSector(MapSector):
   def setSectorAttributes(self):
