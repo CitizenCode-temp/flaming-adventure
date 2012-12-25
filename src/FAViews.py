@@ -14,10 +14,12 @@ class View:
 
   def refresh(self):
     self.screen.refresh()
+    return True
 
   def notify(self, event):
     if isinstance(event, FAEvents.StepEvent):
       self.refresh()
+    return True
 
 """
   AppView
@@ -45,19 +47,24 @@ class AppView(View):
     self.statusView = StatusView(statusHeight, (windowHeight - cmdLineHeight), windowWidth, self.appCollection, self.viewCollection)
     self.cmdLineView = CmdLineView(cmdLineHeight, windowHeight, windowWidth, self.appCollection, self.viewCollection)
 
+  def notify(self, event):
+    self.viewCollection.notify(event)
+    return True
+
   def refresh(self):
     self.mapView.refresh()
     self.statusView.refresh()
     self.cmdLineView.refresh()
+    return True
 
-  def notify(self, event):
-    if isinstance(event, FAEvents.StepEvent):
-      self.viewCollection.notify(event)
-    if isinstance(event, FAEvents.LogMsgEvent):
-      self.statusView.logMsg( event.getMsg() )
-
+  def getCh(self):
+    return self.screen.getch()
+    
   def getCmdLineView(self):
     return self.cmdLineView
+
+  def getStatusView(self):
+    return self.statusView
 
 class CursesView(View):
   def __init__(self, height, windowHeight, windowWidth, appCollection, viewCollection):
@@ -69,20 +76,24 @@ class CursesView(View):
 
   def refresh(self):
     self.screen.refresh()
+    return True
 
   def notify(self,event):
-    self.refresh()
+    if isinstance(event, FAEvents.StepEvent):
+      self.refresh()
+    return True
 
 class CmdLineView(CursesView):
   def refresh(self):
     self.screen.scroll(-1)
 
-  def notify(self, event):
-    if isinstance(event, FAEvents.StepEvent):
-      string = self.screen.getstr(0,0,80).decode()
-      ev = FAEvents.InputEvent(string)
-      self.refresh()
-      self.appCollection.notify(ev)
+  def getCh(self):
+    char = self.screen.getch(0,0)
+    return char
+
+  def getStrCmd(self):
+    string = self.screen.getstr(0,0,80).decode()
+    return string
 
 class StatusView(CursesView):
   def __init__(self, height, windowHeight, windowWidth, appCollection, viewCollection):
@@ -91,7 +102,12 @@ class StatusView(CursesView):
     self.appCollection = appCollection
     self.viewCollection = viewCollection
     self.viewCollection.add(self)
-    self.msgLog = []
+    self.msgLog = ["You search futily for light in the dark cave"]
+    self.statusFlag = "Cmd Mode"
+
+  def setStatusFlag( self, msg ):
+    self.statusFlag = msg
+    self.refresh()
 
   def refresh(self):
     self.screen.clear() 
@@ -101,7 +117,7 @@ class StatusView(CursesView):
     maxHp = str( self.appCollection.getPlayer().getMaxHealth() )
     level = str( self.appCollection.getPlayer().getLevel() )
 
-    self.screen.addstr(0,0, name + " Lvl " + level + " | A5 D3 S1 | HP " + hp + "/" + maxHp)
+    self.screen.addstr(0,0, name + " Lvl " + level + " | A5 D3 S1 | HP " + hp + "/" + maxHp + " | " + self.statusFlag)
 
     if (len( self.msgLog ) > 0):
       self.screen.addstr(1,0,self.msgLog[0])
@@ -117,6 +133,13 @@ class StatusView(CursesView):
 
   def logMsg(self, msg):
     self.msgLog.insert(0,msg)
+
+  def notify(self, event):
+    if isinstance(event, FAEvents.LogMsgEvent):
+      self.logMsg( event.getMsg() )
+    if isinstance(event, FAEvents.StepEvent):
+      self.refresh()
+    return True
 
 class MapView(CursesView):
   def __init__(self, height, windowWidth, appCollection, viewCollection):

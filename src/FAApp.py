@@ -20,9 +20,10 @@ class App:
     self.appView = FAViews.AppView(self, screen, self.appColl)
 
     self.eventScheduler = FAEventScheduler.EventScheduler(self.appColl)
-    self.inputController = FAInputController.InputController(self.appColl)
+    self.inputController = FAInputController.InputController(self.appView, self.appColl)
     self.appStepper = FAAppStepper.AppStepper(self.appColl)
 
+    self.appView.refresh()
     self.appStepper.run()
 
   def notify(self, event):

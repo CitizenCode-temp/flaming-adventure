@@ -29,17 +29,6 @@ class QuitEvent(Event):
   def __init__(self):
     self.name = "QuitEvent"
 
-class InputEvent(Event):
-  """
-  This event is triggered when the CmdLineView gets an input string.
-  """
-  def __init__(self, inputStr=""):
-    self.name = "InputEvent"
-    self.inputStr = inputStr
-
-  def getInputStr(self):
-    return self.inputStr
-
 class MoveEvent(Event):
   """
   Fired when a keyboard movement is detected.

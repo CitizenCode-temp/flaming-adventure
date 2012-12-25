@@ -14,7 +14,7 @@ class Model:
 class Map(Model):
   def __init__(self, _id):
     self._id = _id
-    self.size = 3
+    self.size = 10
     self.mapArray = self.makeMapArray(self.size)
 
   def makeMapArray(self, size):
@@ -22,7 +22,7 @@ class Map(Model):
     for x in range(size):
       mapColumn = []
       for y in range(size):
-        mapColumn.append( FACollections.MapSector("msector-" + str(x) + "-" + str(y)) )
+        mapColumn.append( MapSector("msector-" + str(x) + "-" + str(y)) )
       mapArray.append(mapColumn)
 
     return mapArray
@@ -67,7 +67,6 @@ class Player(Model):
   def notify(self, event):
     if isinstance(event, FAEvents.MoveEvent):
       self.mvPlayer( event )
-
     return True
 
   def mvPlayer(self, mvEvent):
@@ -76,7 +75,6 @@ class Player(Model):
     if( self.appCollection.getMapCollection().getCurrentMap().checkIfContains(x,y) ):
       self.x = x
       self.y = y
-      self.appCollection.notify( FAEvents.LogMsgEvent("You moved!") )
 
   def getName(self):
     return self.name
@@ -92,3 +90,13 @@ class Player(Model):
 
   def getXY(self):
     return [self.x, self.y]
+
+class MapSector(Model):
+  def __init__(self, _id):
+    self._id = _id
+    self.strRep = "."
+    self.characters = FACollections.Collection() 
+    self.items = FACollections.Collection() 
+
+  def getStrRep(self):
+    return self.strRep

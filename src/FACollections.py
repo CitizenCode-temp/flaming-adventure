@@ -58,11 +58,3 @@ class MapCollection(Collection):
 
   def getCurrentMap(self):
     return self.currentMap
-
-class MapSector(Collection):
-  def __init__(self, _id):
-    self._id = _id
-    self.strRep = "."
-
-  def getStrRep(self):
-    return self.strRep

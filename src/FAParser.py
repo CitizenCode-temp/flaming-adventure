@@ -5,12 +5,16 @@ class Parser:
     self.appCollection = appCollection
     self.inputController = inputController
 
+  def parseChar(self, char):
+    if char == 105: # i -- insert mode
+      self.inputController.getInsertModeCmd()
+
   def parse(self, cmd):
      cmdArr = cmd.split(" ")
      if len( cmdArr  ) > 0:
        if cmdArr[0] == "log":
-         mvEvent = FAEvents.LogMsgEvent(" ".join(cmdArr[1:]))
-         self.appCollection.notify( mvEvent )
+         logEvent = FAEvents.LogMsgEvent(" ".join(cmdArr[1:]))
+         self.appCollection.notify( logEvent )
 
        if cmdArr[0] == "quit":
          self.appCollection.notify( FAEvents.QuitEvent() )
