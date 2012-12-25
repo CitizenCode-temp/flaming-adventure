@@ -11,37 +11,6 @@ class Model:
   def getId(self):
     return self._id
 
-class Map(Model):
-  def __init__(self, _id):
-    self._id = _id
-    self.size = 10
-    self.mapArray = self.makeMapArray(self.size)
-
-  def makeMapArray(self, size):
-    mapArray = []
-    for x in range(size):
-      mapColumn = []
-      for y in range(size):
-        mapColumn.append( MapSector("msector-" + str(x) + "-" + str(y)) )
-      mapArray.append(mapColumn)
-
-    return mapArray
-
-  def checkIfContains(self, x, y):
-    if (x >= 0 and x < self.getWidth() and y >=0 and y < self.getHeight()):
-      return True
-    else:
-      return False
-
-  def getMapArray(self):
-    return self.mapArray
-
-  def getWidth(self):
-    return self.size
-
-  def getHeight(self):
-    return self.size
-
 class Player(Model):
   def __init__(self, _id):
       self._id = _id
@@ -90,13 +59,3 @@ class Player(Model):
 
   def getXY(self):
     return [self.x, self.y]
-
-class MapSector(Model):
-  def __init__(self, _id):
-    self._id = _id
-    self.strRep = "."
-    self.characters = FACollections.Collection() 
-    self.items = FACollections.Collection() 
-
-  def getStrRep(self):
-    return self.strRep

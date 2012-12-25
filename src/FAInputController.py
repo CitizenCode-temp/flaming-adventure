@@ -17,8 +17,10 @@ class InputController:
 
   def getInsertModeCmd(self):
     self.appView.getStatusView().setStatusFlag('Insert Mode')
+    self.appView.getStatusView().refresh()
     self.parse( self.appView.getCmdLineView().getStrCmd() )
     self.appView.getStatusView().setStatusFlag('Cmd Mode')
+    self.appView.getStatusView().refresh()
 
   def parse(self, cmd):
     self.cmdHistory.append(cmd)

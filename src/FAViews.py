@@ -56,9 +56,6 @@ class AppView(View):
     self.statusView.refresh()
     self.cmdLineView.refresh()
     return True
-
-  def getCh(self):
-    return self.screen.getch()
     
   def getCmdLineView(self):
     return self.cmdLineView
@@ -88,7 +85,9 @@ class CmdLineView(CursesView):
     self.screen.scroll(-1)
 
   def getCh(self):
-    char = self.screen.getch(0,0)
+    curses.noecho()
+    char = self.screen.getch(0,0) # Get the command, off the screen!
+    curses.echo()
     return char
 
   def getStrCmd(self):
@@ -103,10 +102,15 @@ class StatusView(CursesView):
     self.viewCollection = viewCollection
     self.viewCollection.add(self)
     self.msgLog = ["You search futily for light in the dark cave"]
+    self.lastCmd = ""
     self.statusFlag = "Cmd Mode"
 
   def setStatusFlag( self, msg ):
     self.statusFlag = msg
+    self.refresh()
+
+  def setLastCmd( self, lastCmd ):
+    self.lastCmd = lastCmd
     self.refresh()
 
   def refresh(self):
@@ -117,7 +121,7 @@ class StatusView(CursesView):
     maxHp = str( self.appCollection.getPlayer().getMaxHealth() )
     level = str( self.appCollection.getPlayer().getLevel() )
 
-    self.screen.addstr(0,0, name + " Lvl " + level + " | A5 D3 S1 | HP " + hp + "/" + maxHp + " | " + self.statusFlag)
+    self.screen.addstr(0,0, name + " Lvl " + level + " | A5 D3 S1 | HP " + hp + "/" + maxHp + " | " + self.statusFlag + " | " + self.lastCmd)
 
     if (len( self.msgLog ) > 0):
       self.screen.addstr(1,0,self.msgLog[0])
@@ -159,7 +163,7 @@ class MapView(CursesView):
 
   def refreshMap(self):
     currMap = self.mapCollection.getCurrentMap()
-    mapArr = currMap.getMapArray()
+    mapArr = currMap.getMapSectorArray()
     for x in range(currMap.getWidth()):
       for y in range(currMap.getHeight()):
         self.screen.addstr(y, x, mapArr[x][y].getStrRep())
