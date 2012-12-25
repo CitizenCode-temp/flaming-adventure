@@ -61,3 +61,8 @@ class Player(Model):
   def setXY(self, x, y):
     self.x = x
     self.y = y
+
+  def getDescription(self):
+    playerStr = self.name + " Lvl " + str(self.getLevel()) + " | HP " + str( self.getHealth() ) + "/" + str( self.getMaxHealth() ) + "\n\n"
+    playerStr += "A long description here, will tell the tale of adventures past. The story of scars, tired eyes, and hunger."
+    return playerStr

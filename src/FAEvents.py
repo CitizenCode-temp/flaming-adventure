@@ -51,3 +51,11 @@ class LogMsgEvent(Event):
 
   def getMsg(self):
     return self.msg
+
+class DialogEvent(Event):
+  def __init__(self, obj):
+    self.name = "DialogEvent"
+    self.description = obj.getDescription()
+
+  def getDescription(self):
+    return self.description

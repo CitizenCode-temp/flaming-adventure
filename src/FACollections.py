@@ -40,6 +40,16 @@ class AppCollection(Collection):
   def notifyMaps(self, event):
     self.mapCollection.notify(event)
 
+  def setAppView(self, appView):
+    self.appView = appView
+    self.add( appView )
+
+  def getAppView(self):
+    return self.appView
+
+  def notifyAppView(self, event):
+    self.appView.notify( event )
+
   def getPlayer(self):
     return self.player
 

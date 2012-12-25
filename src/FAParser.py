@@ -4,6 +4,7 @@ class Parser:
   def __init__(self, inputController, appCollection):
     self.appCollection = appCollection
     self.inputController = inputController
+    self.lookDict = self.initLookDictionary()
 
   def parseChar(self, char):
     if char == 105: # i -- insert mode
@@ -34,3 +35,22 @@ class Parser:
       if cmdArr[0] == "go":
         mvEvent = FAEvents.MoveEvent(int(cmdArr[1]), int(cmdArr[2]))
         self.appCollection.notify( mvEvent )
+
+      if cmdArr[0] == "look":
+        if len( cmdArr ) != 2:
+          return False
+
+        self.parseLook( cmdArr[1] )
+      
+      return True
+
+  def parseLook(self, lookKey):
+    lookObj = self.lookDict[ lookKey ]  
+    if lookObj:
+      dialogEvent = FAEvents.DialogEvent( lookObj )
+      self.appCollection.notifyAppView( dialogEvent )
+
+  def initLookDictionary(self):
+      return { 
+        'me': self.appCollection.getPlayer()
+         }
