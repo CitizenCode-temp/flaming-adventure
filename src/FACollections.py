@@ -6,6 +6,7 @@
   notify function.
 """
 import FAMap
+import FAModels
 
 class Collection:
   def __init__(self):
@@ -30,12 +31,11 @@ class Collection:
       m.notify(event)
 
 class AppCollection(Collection):
-  def __init__(self, player):
+  def __init__(self):
     self.members = []
-    self.player = player
-    self.player.setAppCollection( self )
-    self.add( player )
-    self.mapCollection = MapCollection(self, player) 
+    self.player = FAModels.Player("player-0", self)
+    self.add( self.player )
+    self.mapCollection = MapCollection(self, self.player) 
   
   def notifyMaps(self, event):
     self.mapCollection.notify(event)

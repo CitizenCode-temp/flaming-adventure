@@ -12,14 +12,22 @@ class Model:
     return self._id
 
 class Player(Model):
-  def __init__(self, _id):
-      self._id = _id
-      self.name = "Flarg"
-      self.maxHealth = 10.0
-      self.health = 10.0
-      self.level = 0
-      self.x = 0
-      self.y = 0
+  def __init__(self, _id, appCollection):
+    self._id = _id
+    self.appCollection = appCollection
+    self.name = "Flarg"
+    self.maxHealth = 10.0
+    self.health = 10.0
+    self.level = 0
+    self.x = 0
+    self.y = 0
+    self.currentMap = None
+
+  def setCurrentMap(self, aMap):
+    self.currentMap = aMap
+
+  def getCurrentMap(self):
+    return self.currentMap
 
   def getMaxHealth(self):
     return self.maxHealth

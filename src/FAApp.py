@@ -10,19 +10,19 @@ import curses
 class App:
   def __init__(self):
     # appColl -- used for application level event notification
-    self.player = FAModels.Player("player0")
-    self.appColl = FACollections.AppCollection(self.player)
+    self.appColl = FACollections.AppCollection()
     self.appColl.add(self)
-    
+
   def run(self,screen):
     curses.echo()
     screen.scrollok(True)
-    self.appView = FAViews.AppView(self, screen, self.appColl)
 
+    # These guys need screen
+    self.appView = FAViews.AppView(self, screen, self.appColl)
     self.eventScheduler = FAEventScheduler.EventScheduler(self.appColl)
     self.inputController = FAInputController.InputController(self.appView, self.appColl)
     self.appStepper = FAAppStepper.AppStepper(self.appColl)
-
+    
     self.appView.refresh()
     self.appStepper.run()
 

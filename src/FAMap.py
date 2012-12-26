@@ -37,6 +37,7 @@ class Map(FAModels.Model):
     ms = self.mapSectorArray[x][y]
     ms.addCharacter( player )
     player.setXY(x,y)
+    player.setCurrentMap( self )
 
   def movePlayer(self, player, x, y):
     if not self.isPassable( x, y ):
