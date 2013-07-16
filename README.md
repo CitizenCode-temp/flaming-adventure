@@ -1,4 +1,5 @@
-## Start game: ./adv
+## Start game: 
+  - ./adv
 
 ## Movement: 
   - h j k l (ala vim)
