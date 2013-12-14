@@ -1,8 +1,6 @@
 import FACollections
 import FAInputController
 import FAAppStepper
-import FAModels
-import FAEvents
 import FAViews
 import FAEventScheduler
 import curses

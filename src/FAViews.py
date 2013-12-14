@@ -103,7 +103,7 @@ class DialogView(View):
     # Enter loop with simple interactivity
     while True:
       self.outerScreen.box()
-      self.outerScreen.refresh()
+      self.outerScreen.noutrefresh()
       self.screen.refresh(currRow, 0, self.yOffset, self.xOffset, self.yOffset + self.height, self.xOffset + self.width)
       c = self.screen.getch()
       if c == 106 and currRow < maxRow: # j scroll down
@@ -114,7 +114,7 @@ class DialogView(View):
         break
 
     self.outerScreen.clear()
-    self.outerScreen.refresh()
+    self.outerScreen.noutrefresh()
     self.screen.clear()
     self.screen.refresh(currRow, 0, 1, self.xOffset, 11, self.xOffset + self.width)
     curses.echo()

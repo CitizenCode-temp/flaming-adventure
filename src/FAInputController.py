@@ -1,5 +1,4 @@
 import FAParser
-import curses.ascii
 import FAEvents
 
 class InputController:

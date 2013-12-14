@@ -1,5 +1,4 @@
 import FAModels
-import FAEvents
 import FACollections 
 
 class MapCreator:
