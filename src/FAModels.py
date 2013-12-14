@@ -1,5 +1,4 @@
 import FAEvents
-import FACollections
 
 class Model:
   def __init__(self,_id):
@@ -31,9 +30,6 @@ class Player(Model):
 
   def getMaxHealth(self):
     return self.maxHealth
-
-  def getHealth(self):
-    return self.health
 
   def getLevel(self):
     return self.level
