@@ -13,7 +13,7 @@ class View:
     self.collection.add(self)
 
   def refresh(self):
-    self.screen.refresh()
+    self.screen.noutrefresh()
     return True
 
   def notify(self, event):
@@ -61,6 +61,7 @@ class AppView(View):
     self.statusView.refresh()
     # Don't refresh cmdLineView
     #self.cmdLineView.refresh()
+    self.screen.refresh()
     return True
     
   def getCmdLineView(self):
@@ -127,7 +128,7 @@ class CursesView(View):
     self.viewCollection.add(self)
 
   def refresh(self):
-    self.screen.refresh()
+    self.screen.noutrefresh()
     return True
 
   def notify(self,event):
@@ -186,7 +187,7 @@ class StatusView(CursesView):
     else:
       self.screen.addstr(2,0,"")
 
-    self.screen.refresh()
+    self.screen.noutrefresh()
 
   def logMsg(self, msg):
     self.msgLog.insert(0,msg)
@@ -214,10 +215,10 @@ class MapView(CursesView):
   def refresh(self):
     self.screen.clear()
     self.outerScreen.box()
-    self.outerScreen.refresh()
+    self.outerScreen.noutrefresh()
     self.refreshMap()
     self.playerView.refresh()
-    self.screen.refresh()
+    self.screen.noutrefresh()
 
   def refreshMap(self):
     currMap = self.mapCollection.getCurrentMap()
