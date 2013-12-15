@@ -9,17 +9,18 @@ def get_2d_random(
     xmin=0,
     ymin=0,
     near=None,
-    near_distance=0
+    min_distance=0,
+    max_distance=0
 ):
     """Generate an (x, y) coordinate tuple somewhere in the specified
     rectangle."""
     given_xmax = xmax 
     given_ymax = ymax 
     if near is not None:
-        xmin = near[0]
-        ymin = near[1]
-        xmax = xmin + near_distance
-        ymax = ymin + near_distance
+        xmin = near[0] + min_distance
+        ymin = near[1] + min_distance
+        xmax = near[0] + max_distance
+        ymax = near[1] + max_distance
         if xmax > given_xmax:
             xmax = given_xmax
         if ymax > given_ymax:
@@ -42,14 +43,20 @@ class Room:
         self.ymax = ymax
         # Room dimensions
         self.room_size = room_size
-        self.min_size = 2
+        self.min_size = 3
 
         self.room = self.make_room()
 
     def make_room(self):
         def get_corners():
             corner1 = (self.x0, self.y0)
-            corner2 = get_2d_random(self.xmax, self.ymax, near=corner1, near_distance=self.room_size)
+            corner2 = get_2d_random(
+                self.xmax,
+                self.ymax,
+                near=corner1,
+                min_distance=self.min_size,
+                max_distance=self.room_size
+            )
             return corner1, corner2
 
         c1, c2 = get_corners()
