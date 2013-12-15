@@ -10,7 +10,7 @@ class MapCreator:
 
   def make_impassable_areas(self, map_array):
     n = 7
-    room_size = 5
+    room_size = 9
 
     def get_2d_random(near=None, near_distance=0):
       xmin = 0
@@ -44,7 +44,10 @@ class MapCreator:
         x2, y2 = c2
         for x in range(x1, x2 + 1):
           for y in range(y1, y2 + 1):
-            map_array[x][y] = WallMapSector("wmsector-{0}-{1}".format(x, y))
+            if (x in [x1, x2] or y in [y1, y2]):
+              map_array[x][y] = WallMapSector("wmsector-{0}-{1}".format(x, y))
+            else:
+              map_array[x][y] = MapSector("msector-{0}-{1}".format(x, y))
 
   def createMap(self, _id):
     # Create the base tile
