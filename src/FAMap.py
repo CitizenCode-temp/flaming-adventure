@@ -1,16 +1,31 @@
+import random
+
 import FAModels
 import FACollections 
 
 class MapCreator:
   def __init__(self):
-    self.sizeX = 60
-    self.sizeY = 10
+    self.sizeX = 80
+    self.sizeY = 25
+
+  def make_impassable_areas(self, map_array):
+    n = 20
+    def gen_2d_randoms():
+      for _ in range(n):
+        yield (
+          random.randint(0, self.sizeX - 1),
+          random.randint(0, self.sizeY - 1)
+        )
+                
+    for x, y in gen_2d_randoms():
+        map_array[x][y] = WallMapSector("wmsector-{0}-{1}".format(x, y))
 
   def createMap(self, _id):
     # Create the base tile
     mapArray = self.makeMapSectorArray( self.sizeX, self.sizeY )
-    # Make a single impassable area
-    mapArray[15][4] = WallMapSector("wmsector-15-15")
+
+    # randomly generate impassable areas
+    self.make_impassable_areas(mapArray)
 
     newMap = Map(_id, mapArray)
     return newMap
