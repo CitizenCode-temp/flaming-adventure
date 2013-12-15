@@ -221,11 +221,12 @@ class MapView(CursesView):
     self.screen.noutrefresh()
 
   def refreshMap(self):
+    # TODO make sure the screen is big enough
     currMap = self.mapCollection.getCurrentMap()
     mapArr = currMap.getMapSectorArray()
     for x in range(currMap.getWidth()):
       for y in range(currMap.getHeight()):
-        self.screen.addstr(y, x, mapArr[x][y].getStrRep())
+            self.screen.addstr(y, x, mapArr[x][y].getStrRep())
 
 class PlayerView(View):
   def __init__(self, screen, appCollection, viewCollection):

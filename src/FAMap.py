@@ -1,53 +1,97 @@
 import random
 
 import FAModels
-import FACollections 
+from sectors import MapSector, WallMapSector
 
-class MapCreator:
-  def __init__(self):
-    self.sizeX = 80
-    self.sizeY = 25
-
-  def make_impassable_areas(self, map_array):
-    n = 7
-    room_size = 9
-
-    def get_2d_random(near=None, near_distance=0):
-      xmin = 0
-      ymin = 0
-      xmax = self.sizeX - 1
-      ymax = self.sizeY - 1
-      if near is not None:
+def get_2d_random(
+    xmax,
+    ymax,
+    xmin=0,
+    ymin=0,
+    near=None,
+    near_distance=0
+):
+    """Generate an (x, y) coordinate tuple somewhere in the specified
+    rectangle."""
+    given_xmax = xmax 
+    given_ymax = ymax 
+    if near is not None:
         xmin = near[0]
         ymin = near[1]
         xmax = xmin + near_distance
         ymax = ymin + near_distance
-        if xmax > self.sizeX - 1:
-          xmax = self.sizeX - 1
-        if ymax > self.sizeY - 1:
-          ymax = self.sizeY - 1
-        
-      x = random.randint(xmin, xmax)
-      y = random.randint(ymin, ymax)
+        if xmax > given_xmax:
+            xmax = given_xmax
+        if ymax > given_ymax:
+            ymax = given_ymax
+    
+    x = random.randint(xmin, xmax)
+    y = random.randint(ymin, ymax)
 
-      return x, y
+    return x, y
 
-    def gen_corners():
-      for _ in range(n):
-        corner1 = get_2d_random()
-        corner2 = get_2d_random(corner1, room_size)
-        yield corner1, corner2
-                
-    for c1, c2 in gen_corners():
+class Room:
+    def __init__(self, x0, y0, xmax, ymax, room_size):
+        # Upper left hand corner of the room
+        self.x0 = x0
+        self.y0 = y0
+        # Map dimensions
+        self.xmin = 0
+        self.xmax = xmax
+        self.ymin = 0
+        self.ymax = ymax
+        # Room dimensions
+        self.room_size = room_size
+        self.min_size = 2
+
+        self.room = self.make_room()
+
+    def make_room(self):
+        def get_corners():
+            corner1 = (self.x0, self.y0)
+            corner2 = get_2d_random(self.xmax, self.ymax, near=corner1, near_distance=self.room_size)
+            return corner1, corner2
+
+        c1, c2 = get_corners()
         # c1 is guarenteed to be 'bigger' than c2
         x1, y1 = c1
         x2, y2 = c2
-        for x in range(x1, x2 + 1):
-          for y in range(y1, y2 + 1):
-            if (x in [x1, x2] or y in [y1, y2]):
-              map_array[x][y] = WallMapSector("wmsector-{0}-{1}".format(x, y))
-            else:
-              map_array[x][y] = MapSector("msector-{0}-{1}".format(x, y))
+        # Make a zero-indexed room
+        room = []
+        for x in range(x2 + 1 - x1):
+            room_column = []
+            for y in range(y2 + 1 - y1):
+                if (x in [0, x2 - x1 - 1] or y in [0, y2 - y1 - 1]):
+                    room_column.append(WallMapSector("wmsector-{0}-{1}".format(x, y)))
+                else:
+                    room_column.append(MapSector("msector-{0}-{1}".format(x, y)))
+            room.append(room_column)
+
+        return room
+
+    def append_to_map_array(self, map_array):
+        x1 = self.x0
+        x2 = self.x0 + len(self.room) - 1
+        y1 = self.y0
+        y2 = self.y0 + len(self.room[0]) - 1
+        for x in range(x1, x2):
+            for y in range(y1, y2):
+                map_array[x][y] = self.room[x - x1][y - y1]
+
+class MapCreator:
+  def __init__(self):
+    self.sizeX = 60
+    self.sizeY = 25
+
+  def make_impassable_areas(self, map_array):
+    n = 5
+    room_size = 10
+    xmax = self.sizeX - 1 
+    ymax = self.sizeY - 1
+    for _ in range(n):
+      x, y = get_2d_random(xmax, ymax)
+      r = Room(x, y, xmax, ymax, room_size)
+      r.append_to_map_array(map_array)
 
   def createMap(self, _id):
     # Create the base tile
@@ -109,31 +153,3 @@ class Map(FAModels.Model):
 
   def getHeight(self):
     return len( self.mapSectorArray[0] )
-
-class MapSector(FAModels.Model):
-  def __init__(self, _id):
-    self._id = _id
-    self.characters = FACollections.Collection() 
-    self.items = FACollections.Collection() 
-    self.setSectorAttributes()
-
-  def setSectorAttributes(self):
-    self.strRep = "."
-    self.passable = True
-
-  def getStrRep(self):
-    return self.strRep
-
-  def isPassable(self):
-    return self.passable
-
-  def removeCharacter(self, charObj):
-    self.characters.remove(charObj)
-
-  def addCharacter(self, charObj):
-    self.characters.add(charObj)
-
-class WallMapSector(MapSector):
-  def setSectorAttributes(self):
-    self.strRep = "="
-    self.passable = False
