@@ -9,16 +9,42 @@ class MapCreator:
     self.sizeY = 25
 
   def make_impassable_areas(self, map_array):
-    n = 20
-    def gen_2d_randoms():
+    n = 7
+    room_size = 5
+
+    def get_2d_random(near=None, near_distance=0):
+      xmin = 0
+      ymin = 0
+      xmax = self.sizeX - 1
+      ymax = self.sizeY - 1
+      if near is not None:
+        xmin = near[0]
+        ymin = near[1]
+        xmax = xmin + near_distance
+        ymax = ymin + near_distance
+        if xmax > self.sizeX - 1:
+          xmax = self.sizeX - 1
+        if ymax > self.sizeY - 1:
+          ymax = self.sizeY - 1
+        
+      x = random.randint(xmin, xmax)
+      y = random.randint(ymin, ymax)
+
+      return x, y
+
+    def gen_corners():
       for _ in range(n):
-        yield (
-          random.randint(0, self.sizeX - 1),
-          random.randint(0, self.sizeY - 1)
-        )
+        corner1 = get_2d_random()
+        corner2 = get_2d_random(corner1, room_size)
+        yield corner1, corner2
                 
-    for x, y in gen_2d_randoms():
-        map_array[x][y] = WallMapSector("wmsector-{0}-{1}".format(x, y))
+    for c1, c2 in gen_corners():
+        # c1 is guarenteed to be 'bigger' than c2
+        x1, y1 = c1
+        x2, y2 = c2
+        for x in range(x1, x2 + 1):
+          for y in range(y1, y2 + 1):
+            map_array[x][y] = WallMapSector("wmsector-{0}-{1}".format(x, y))
 
   def createMap(self, _id):
     # Create the base tile
