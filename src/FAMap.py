@@ -53,9 +53,14 @@ class Room:
 
         self.room = self.make_room()
 
-    def make_room(self):
-        def get_corners():
-            corner1 = (self.x0, self.y0)
+    def get_corners(self, room=None):
+        """Grab the absolute corner coordinates.
+        
+        :param room: if room is None, a new random corner is picked. if given
+            room, return the absolute coords of the room's bottom right as
+            corner2"""
+        corner1 = (self.x0, self.y0)
+        if room is None:
             corner2 = get_2d_random(
                 self.xmax,
                 self.ymax,
@@ -63,9 +68,21 @@ class Room:
                 min_distance=self.min_room_size,
                 max_distance=self.max_room_size
             )
-            return corner1, corner2
+        else:
+            corner2 = map(
+                sum,
+                zip(
+                    corner1,
+                    (len(room) - 1, len(room[0]) - 1)
+                )
+            )
 
-        c1, c2 = get_corners()
+        return corner1, corner2
+
+    def make_room(self):
+        """Randomly generate a room area. Draw the walls and doors for the
+        room."""
+        c1, c2 = self.get_corners()
         # c1 is guarenteed to be 'bigger' than c2
         x1, y1 = c1
         x2, y2 = c2
@@ -117,79 +134,138 @@ class Room:
             for y in range(y1, y2):
                 map_array[x][y] = self.room[x - x1][y - y1]
 
+    def contains(self, px, py, overlap=0):
+        """Determine whether the point (px, py) lies in the room+walls."""
+        corner1, corner2 = self.get_corners(self.room)
+        if (
+            (corner1[0] <= px - overlap and corner2[0] >= px + overlap) and
+            (corner1[1] <= py - overlap and corner2[1] >= py + overlap) 
+        ):
+            return True
+        else:
+            return False
+
+    def contains_area(self, corner1, corner2, overlap=0):
+        # Check if self contains at least one corner
+        x1, y1 = corner1
+        x2, y2 = corner2
+
+        if (
+            self.contains(x1, y1, overlap=overlap) or
+            self.contains(x1, y2, overlap=overlap) or
+            self.contains(x2, y1, overlap=overlap) or
+            self.contains(x2, y2, overlap=overlap)
+        ):
+            return True
+        else:
+            return False
+        
+
 class MapCreator:
-  def __init__(self):
-    self.sizeX = 60
-    self.sizeY = 25
+    def __init__(self):
+        self.sizeX = 60
+        self.sizeY = 25
 
-  def make_impassable_areas(self, map_array):
-    n = 5
-    min_room_size = 5
-    max_room_size = 10
-    xmax = self.sizeX
-    ymax = self.sizeY
-    for _ in range(n):
-      x, y = get_2d_random(xmax - 1 - min_room_size, ymax - 1 - min_room_size)
-      r = Room(x, y, xmax, ymax, min_room_size, max_room_size)
-      r.append_to_map_array(map_array)
+    def make_impassable_areas(self, n_rooms=6):
+        def is_acceptable_overlap(room, rooms, ok_overlap=1):
+            if not rooms:
+                return True
+            for r in rooms:
+                if (
+                    r.contains_area(*room.get_corners()) or
+                    room.contains_area(*r.get_corners())
+                ):
+                    return False
+            return True
 
-  def createMap(self, _id):
-    # Create the base tile
-    mapArray = self.makeMapSectorArray( self.sizeX, self.sizeY )
+        min_room_size = 5
+        max_room_size = 10
+        xmax = self.sizeX
+        ymax = self.sizeY
+        rooms = []
+        for _ in range(n_rooms):
+            r = None
+            while r is None or not is_acceptable_overlap(r, rooms):
+                x, y = get_2d_random(
+                    xmax - 1 - min_room_size,
+                    ymax - 1 - min_room_size
+                )
+                r = Room(x, y, xmax, ymax, min_room_size, max_room_size)
+            rooms.append(r)
+        return rooms
 
-    # randomly generate impassable areas
-    self.make_impassable_areas(mapArray)
+    def createMap(self, _id):
+        # Create the base tile
+        mapArray = self.makeMapSectorArray( self.sizeX, self.sizeY )
+        # randomly generate impassable areas
+        rooms = self.make_impassable_areas()
+        newMap = Map(_id, mapArray, rooms)
 
-    newMap = Map(_id, mapArray)
-    return newMap
+        return newMap
 
-  def makeMapSectorArray(self, sizeX, sizeY):
-    mapArray = []
-    for x in range(sizeX):
-      mapColumn = []
-      for y in range(sizeY):
-        mapColumn.append( MapSector("msector-" + str(x) + "-" + str(y)) )
-      mapArray.append(mapColumn)
+    def makeMapSectorArray(self, sizeX, sizeY):
+        mapArray = []
+        for x in range(sizeX):
+            mapColumn = []
+            for y in range(sizeY):
+                mapColumn.append( MapSector("msector-" + str(x) + "-" + str(y)) )
+            mapArray.append(mapColumn)
 
-    return mapArray
+        return mapArray
 
 class Map(FAModels.Model):
-  def __init__(self, _id, mapSectorArray):
-    self._id = _id
-    self.mapSectorArray = mapSectorArray
+    def __init__(self, _id, mapSectorArray, rooms=None):
+        self._id = _id
+        self.mapSectorArray = mapSectorArray
+        self.rooms = rooms
+        if self.rooms is not None:
+            for r in self.rooms:
+                r.append_to_map_array(self.mapSectorArray)
 
-  def insertPlayer(self, player):
-    x = 9 
-    y = 9
-    ms = self.mapSectorArray[x][y]
-    ms.addCharacter( player )
-    player.setXY(x,y)
-    player.setCurrentMap( self )
+    def get_random_player_start(self):
+        while True:
+            x, y = get_2d_random(
+                len(self.mapSectorArray) - 1,
+                len(self.mapSectorArray[0]) - 1
+            )
+            for r in self.rooms:
+                if r.contains(x, y):
+                    continue
+            if not self.isPassable(x, y):
+                continue
+            return x, y
 
-  def movePlayer(self, player, x, y):
-    if not self.isPassable( x, y ):
-      return player.getXY() 
-    [plX, plY] = player.getXY() 
-    self.mapSectorArray[plX][plY].removeCharacter( player )
-    self.mapSectorArray[x][y].addCharacter( player )
-    return [x, y]
+    def insertPlayer(self, player):
+        x, y = self.get_random_player_start()
+        map_sector = self.mapSectorArray[x][y]
+        map_sector.addCharacter(player)
+        player.setXY(x, y)
+        player.setCurrentMap( self )
 
-  def isPassable(self, x, y):
-    if not self.contains(x, y):
-      return False
-    return self.mapSectorArray[x][y].isPassable()
+    def movePlayer(self, player, x, y):
+        if not self.isPassable( x, y ):
+            return player.getXY() 
+        [plX, plY] = player.getXY() 
+        self.mapSectorArray[plX][plY].removeCharacter( player )
+        self.mapSectorArray[x][y].addCharacter( player )
+        return [x, y]
 
-  def contains(self, x, y):
-    if (x >= 0 and x < self.getWidth() and y >=0 and y < self.getHeight()):
-      return True
-    else:
-      return False
+    def isPassable(self, x, y):
+        if not self.contains(x, y):
+            return False
+        return self.mapSectorArray[x][y].isPassable()
 
-  def getMapSectorArray(self):
-    return self.mapSectorArray
+    def contains(self, x, y):
+        if (x >= 0 and x < self.getWidth() and y >=0 and y < self.getHeight()):
+            return True
+        else:
+            return False
 
-  def getWidth(self):
-    return len( self.mapSectorArray )
+    def getMapSectorArray(self):
+        return self.mapSectorArray
 
-  def getHeight(self):
-    return len( self.mapSectorArray[0] )
+    def getWidth(self):
+        return len( self.mapSectorArray )
+
+    def getHeight(self):
+        return len( self.mapSectorArray[0] )
