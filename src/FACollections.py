@@ -64,10 +64,14 @@ class MapCollection(Collection):
     self.currentMap = self.members[0]
 
   def getInitialMap(self, player):
-    firstMap = self.mapCreator.createMap("map-0")
-    firstMap.insertPlayer( player )
-    firstMap.insert_npcs()
-    return firstMap
+    first_map = self.mapCreator.createMap("map-0")
+    first_map.insertPlayer( player )
+    self.add_npcs(first_map)
+    return first_map
+
+  def add_npcs(self, fa_map):
+      npc = FAModels.NPC("npc-0", self.appCollection)
+      pass
 
   def getCurrentMap(self):
     return self.currentMap
