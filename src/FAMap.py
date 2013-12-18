@@ -244,7 +244,7 @@ class Map(FAModels.Model):
             for r in self.rooms:
                 r.append_to_map_array(self.mapSectorArray)
 
-    def get_random_player_start(self):
+    def get_random_npc_start(self):
         while True:
             x, y = get_2d_random(
                 len(self.mapSectorArray) - 1,
@@ -255,23 +255,23 @@ class Map(FAModels.Model):
                     continue
             if not self.isPassable(x, y):
                 continue
+            if not self.is_empty(x, y):
+                continue
             return x, y
 
+    def insert_npc(self, npc):
+        x, y = self.get_random_npc_start()
+        map_sector = self.mapSectorArray[x][y]
+        map_sector.addCharacter(npc)
+        npc.setXY(x, y)
+        npc.setCurrentMap( self )
+
     def insertPlayer(self, player):
-        x, y = self.get_random_player_start()
+        x, y = self.get_random_npc_start()
         map_sector = self.mapSectorArray[x][y]
         map_sector.addCharacter(player)
         player.setXY(x, y)
         player.setCurrentMap( self )
-
-    def insert_npcs(self):
-        pass
-#       npc = FAModels.NPC("npc-01", self.appCollection)
-#       x, y = self.get_random_player_start()
-#       map_sector = self.mapSectorArray[x][y]
-#       map_sector.addCharacter(npc)
-#       npc.setXY(x, y)
-#       npc.setCurrentMap( self )
 
     def movePlayer(self, player, x, y):
         if not self.isPassable( x, y ):
@@ -285,6 +285,11 @@ class Map(FAModels.Model):
         if not self.contains(x, y):
             return False
         return self.mapSectorArray[x][y].isPassable()
+
+    def is_empty(self, x, y):
+        if not self.contains(x, y):
+            return False # Prevent out-of-bounds spawning
+        return self.mapSectorArray[x][y].is_empty()
 
     def contains(self, x, y):
         if (x >= 0 and x < self.getWidth() and y >=0 and y < self.getHeight()):

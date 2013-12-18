@@ -24,6 +24,9 @@ class MapSector(FAModels.Model):
   def addCharacter(self, charObj):
     self.characters.add(charObj)
 
+  def is_empty(self):
+    return len(self.characters) == 0
+
 class WallMapSector(MapSector):
   def setSectorAttributes(self):
     self.strRep = "#"

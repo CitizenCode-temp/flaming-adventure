@@ -71,7 +71,7 @@ class MapCollection(Collection):
 
   def add_npcs(self, fa_map):
       npc = FAModels.NPC("npc-0", self.appCollection)
-      pass
+      fa_map.insert_npc(npc)
 
   def getCurrentMap(self):
     return self.currentMap
