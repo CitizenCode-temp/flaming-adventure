@@ -192,12 +192,12 @@ class MapCreator:
                     return False
             return True
 
-        def make_hallway(r1, r2):
-            hallway_corners = can_make_hallway(r1, r2)
-            if hallway_corners:
-                c1, c2 = hallway_corners
-                x, y = c1
-                r = Room(x, y, self.sizeX-1, self.sizeY-1, corners=hallway_corners)
+#       def make_hallway(r1, r2):
+#           hallway_corners = can_make_hallway(r1, r2)
+#           if hallway_corners:
+#               c1, c2 = hallway_corners
+#               x, y = c1
+#               r = Room(x, y, self.sizeX-1, self.sizeY-1, corners=hallway_corners)
 
 
         min_room_size = 5
@@ -263,6 +263,15 @@ class Map(FAModels.Model):
         map_sector.addCharacter(player)
         player.setXY(x, y)
         player.setCurrentMap( self )
+
+    def insert_npcs(self):
+        pass
+#       npc = FAModels.NPC("npc-01", self.appCollection)
+#       x, y = self.get_random_player_start()
+#       map_sector = self.mapSectorArray[x][y]
+#       map_sector.addCharacter(npc)
+#       npc.setXY(x, y)
+#       npc.setCurrentMap( self )
 
     def movePlayer(self, player, x, y):
         if not self.isPassable( x, y ):

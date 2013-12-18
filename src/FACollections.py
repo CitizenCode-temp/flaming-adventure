@@ -66,6 +66,7 @@ class MapCollection(Collection):
   def getInitialMap(self, player):
     firstMap = self.mapCreator.createMap("map-0")
     firstMap.insertPlayer( player )
+    firstMap.insert_npcs()
     return firstMap
 
   def getCurrentMap(self):

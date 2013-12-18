@@ -10,11 +10,11 @@ class Model:
   def getId(self):
     return self._id
 
-class Player(Model):
+class NPC(Model):
   def __init__(self, _id, appCollection):
     self._id = _id
     self.appCollection = appCollection
-    self.name = "Flarg"
+    self.name = "Fluffy the vampire slayer (NPC)"
     self.maxHealth = 10.0
     self.health = 10.0
     self.level = 0
@@ -38,14 +38,12 @@ class Player(Model):
     self.appCollection = appCollection
 
   def notify(self, event):
-    if isinstance(event, FAEvents.MoveEvent):
-      self.mvPlayer( event )
     return True
 
-  def mvPlayer(self, mvEvent):
+  def move(self, mvEvent):
     x = self.x + mvEvent.getDx()
     y = self.y + mvEvent.getDy()
-    [self.x, self.y] = self.appCollection.getMapCollection().getCurrentMap().movePlayer(self, x, y)
+    [self.x, self.y] = self.appCollection.getMapCollection().getCurrentMap().move_npc(self, x, y)
 
   def getName(self):
     return self.name
@@ -65,6 +63,33 @@ class Player(Model):
   def setXY(self, x, y):
     self.x = x
     self.y = y
+
+  def getDescription(self):
+    descrip = self.name + "(NPC) Lvl " + str(self.getLevel()) + " | HP " + str( self.getHealth() ) + "/" + str( self.getMaxHealth() ) + "\n\n"
+    descrip += "A nondescript townsperson"
+    return descrip
+
+class Player(NPC):
+  def __init__(self, _id, appCollection):
+    self._id = _id
+    self.appCollection = appCollection
+    self.name = "Flarg"
+    self.maxHealth = 10.0
+    self.health = 10.0
+    self.level = 0
+    self.x = 0
+    self.y = 0
+    self.currentMap = None
+
+  def notify(self, event):
+    if isinstance(event, FAEvents.MoveEvent):
+      self.mvPlayer( event )
+    return True
+
+  def mvPlayer(self, mvEvent):
+    x = self.x + mvEvent.getDx()
+    y = self.y + mvEvent.getDy()
+    [self.x, self.y] = self.appCollection.getMapCollection().getCurrentMap().movePlayer(self, x, y)
 
   def getDescription(self):
     playerStr = self.name + " Lvl " + str(self.getLevel()) + " | HP " + str( self.getHealth() ) + "/" + str( self.getMaxHealth() ) + "\n\n"
