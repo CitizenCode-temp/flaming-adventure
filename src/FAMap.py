@@ -37,7 +37,8 @@ def get_2d_random(
     return x, y
 
 class Room:
-    def __init__(self, x0, y0, xmax, ymax, min_room_size, max_room_size):
+    """Make rooms. Pull out the random code sometime."""
+    def __init__(self, x0, y0, xmax, ymax, min_room_size=5, max_room_size=15, corners=None):
         # Upper left hand corner of the room
         self.x0 = x0
         self.y0 = y0
@@ -51,7 +52,7 @@ class Room:
         self.max_room_size = max_room_size
         self.max_doors = 2
 
-        self.room = self.make_room()
+        self.room = self.make_room(corners=corners)
 
     def get_corners(self, room=None):
         """Grab the absolute corner coordinates.
@@ -79,11 +80,14 @@ class Room:
 
         return corner1, corner2
 
-    def make_room(self):
+    def make_room(self, corners=None):
         """Randomly generate a room area. Draw the walls and doors for the
         room."""
-        c1, c2 = self.get_corners()
-        # c1 is guarenteed to be 'bigger' than c2
+        # c1 is guaranteed to be < than c2
+        if corners:
+            c1, c2 = corners
+        else:
+            c1, c2 = self.get_corners()
         x1, y1 = c1
         x2, y2 = c2
         # Make a zero-indexed room
@@ -145,17 +149,27 @@ class Room:
         else:
             return False
 
-    def contains_area(self, corner1, corner2, overlap=0):
+    def contains_area(self, corner1, corner2, overlap=0, single_overlap=False):
         # Check if self contains at least one corner
         x1, y1 = corner1
         x2, y2 = corner2
 
-        if (
+        b1 = (
             self.contains(x1, y1, overlap=overlap) or
-            self.contains(x1, y2, overlap=overlap) or
+            self.contains(x1, y2, overlap=overlap)
+        )
+
+        b2 = (
             self.contains(x2, y1, overlap=overlap) or
             self.contains(x2, y2, overlap=overlap)
-        ):
+        )
+
+
+        # != here is a bool xor
+        # return hallway_corners
+        if single_overlap and (b1 != b2):
+            return True
+        elif not single_overlap and (b1 or b2):
             return True
         else:
             return False
@@ -166,7 +180,7 @@ class MapCreator:
         self.sizeX = 60
         self.sizeY = 25
 
-    def make_impassable_areas(self, n_rooms=6):
+    def make_rooms(self, n_rooms=6):
         def is_acceptable_overlap(room, rooms, ok_overlap=1):
             if not rooms:
                 return True
@@ -177,6 +191,14 @@ class MapCreator:
                 ):
                     return False
             return True
+
+        def make_hallway(r1, r2):
+            hallway_corners = can_make_hallway(r1, r2)
+            if hallway_corners:
+                c1, c2 = hallway_corners
+                x, y = c1
+                r = Room(x, y, self.sizeX-1, self.sizeY-1, corners=hallway_corners)
+
 
         min_room_size = 5
         max_room_size = 10
@@ -198,7 +220,7 @@ class MapCreator:
         # Create the base tile
         mapArray = self.makeMapSectorArray( self.sizeX, self.sizeY )
         # randomly generate impassable areas
-        rooms = self.make_impassable_areas()
+        rooms = self.make_rooms()
         newMap = Map(_id, mapArray, rooms)
 
         return newMap
