@@ -273,9 +273,13 @@ class Map(FAModels.Model):
         npc.setCurrentMap( self )
 
     def make_npcs(self):
-        npc = FAModels.NPC("npc-0", self.app_collection)
-        self.insert_npc(npc)
-        return [npc]
+        N = 10
+        npcs = []
+        for i in range(N):
+            npc = FAModels.NPC("npc-{0}".format(i), self.app_collection)
+            self.insert_npc(npc)
+            npcs.append(npc)
+        return npcs
 
     def insertPlayer(self, player):
         x, y = self.get_random_npc_start()

@@ -227,7 +227,7 @@ class MapView(CursesView):
     self.playerView = PlayerView(self.screen, self.appCollection.getPlayer())
 
     self.npc_views = []
-    npcs= self.mapCollection.getCurrentMap().get_npcs()
+    npcs = self.mapCollection.getCurrentMap().get_npcs()
     for n in npcs:
         v = NPCView(self.screen, n)
         self.npc_views.append(v)
@@ -237,6 +237,8 @@ class MapView(CursesView):
     self.outerScreen.box()
     self.outerScreen.noutrefresh()
     self.refreshMap()
+    for v in self.npc_views:
+        v.refresh()
     self.playerView.refresh()
     self.screen.noutrefresh()
 
