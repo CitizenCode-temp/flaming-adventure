@@ -199,7 +199,21 @@ class StatusView(CursesView):
       self.refresh()
     return True
 
+class NPCView(View):
+  def __init__(self, screen, npc):
+    self.npc = npc
+    self.screen = screen
+
+  def refresh(self):
+    x, y = self.npc.getXY()
+    self.screen.addstr(y, x, self.npc.get_char())
+
+
 class MapView(CursesView):
+  """
+    A notifieable view which contains references to the map collection as
+    well as player and npc views.
+  """
   def __init__(self, height, windowWidth, appCollection, viewCollection):
     self.outerScreen = curses.newwin(height, windowWidth, 0, 0) 
     self.outerScreen.border(0)
@@ -210,7 +224,13 @@ class MapView(CursesView):
     self.viewCollection = viewCollection
     self.viewCollection.add(self)
 
-    self.playerView = PlayerView(self.screen, appCollection, viewCollection)
+    self.playerView = PlayerView(self.screen, self.appCollection.getPlayer())
+
+    self.npc_views = []
+    npcs= self.mapCollection.getCurrentMap().get_npcs()
+    for n in npcs:
+        v = NPCView(self.screen, n)
+        self.npc_views.append(v)
 
   def refresh(self):
     self.screen.clear()
@@ -229,16 +249,10 @@ class MapView(CursesView):
             self.screen.addstr(y, x, mapArr[x][y].getStrRep())
 
 class PlayerView(View):
-  def __init__(self, screen, appCollection, viewCollection):
+  def __init__(self, screen, player):
     self.screen = screen
-    self.appCollection = appCollection
-    self.player = appCollection.getPlayer()
-    self.viewCollection = viewCollection
-    self.viewCollection.add(self)
+    self.player = player
 
   def refresh(self):
     x, y = self.player.getXY()
     self.screen.addstr(y,x,"@")
-
-  def notify(self,event):
-    return True

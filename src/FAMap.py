@@ -176,9 +176,10 @@ class Room:
         
 
 class MapCreator:
-    def __init__(self):
+    def __init__(self, app_collection):
         self.sizeX = 60
         self.sizeY = 25
+        self.app_collection = app_collection
 
     def make_rooms(self, n_rooms=6):
         def is_acceptable_overlap(room, rooms, ok_overlap=1):
@@ -221,7 +222,7 @@ class MapCreator:
         mapArray = self.makeMapSectorArray( self.sizeX, self.sizeY )
         # randomly generate impassable areas
         rooms = self.make_rooms()
-        newMap = Map(_id, mapArray, rooms)
+        newMap = Map(_id, mapArray, self.app_collection, rooms=rooms)
 
         return newMap
 
@@ -236,13 +237,18 @@ class MapCreator:
         return mapArray
 
 class Map(FAModels.Model):
-    def __init__(self, _id, mapSectorArray, rooms=None):
+    def __init__(self, _id, mapSectorArray, app_collection, rooms=None):
         self._id = _id
         self.mapSectorArray = mapSectorArray
+        self.app_collection = app_collection
         self.rooms = rooms
         if self.rooms is not None:
             for r in self.rooms:
                 r.append_to_map_array(self.mapSectorArray)
+        self.npcs = self.make_npcs()
+
+    def get_npcs(self):
+        return self.npcs
 
     def get_random_npc_start(self):
         while True:
@@ -265,6 +271,11 @@ class Map(FAModels.Model):
         map_sector.addCharacter(npc)
         npc.setXY(x, y)
         npc.setCurrentMap( self )
+
+    def make_npcs(self):
+        npc = FAModels.NPC("npc-0", self.app_collection)
+        self.insert_npc(npc)
+        return [npc]
 
     def insertPlayer(self, player):
         x, y = self.get_random_npc_start()

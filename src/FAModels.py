@@ -11,8 +11,9 @@ class Model:
     return self._id
 
 class NPC(Model):
-  def __init__(self, _id, appCollection):
+  def __init__(self, _id, appCollection, char='m'):
     self._id = _id
+    self.char = char
     self.appCollection = appCollection
     self.name = "Fluffy the vampire slayer (NPC)"
     self.maxHealth = 10.0
@@ -21,6 +22,9 @@ class NPC(Model):
     self.x = 0
     self.y = 0
     self.currentMap = None
+
+  def get_char(self):
+    return self.char
 
   def setCurrentMap(self, aMap):
     self.currentMap = aMap
