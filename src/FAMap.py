@@ -297,9 +297,13 @@ class Map(FAModels.Model):
         return [x, y]
 
     def isPassable(self, x, y):
-        if not self.contains(x, y):
+        if (
+            self.contains(x, y) and
+            self.mapSectorArray[x][y].isPassable()
+           ):
+            return True
+        else:
             return False
-        return self.mapSectorArray[x][y].isPassable()
 
     def is_empty(self, x, y):
         if not self.contains(x, y):

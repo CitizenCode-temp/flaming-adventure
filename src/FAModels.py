@@ -21,7 +21,11 @@ class NPC(Model):
     self.level = 0
     self.x = 0
     self.y = 0
+    self.is_passable = False
     self.currentMap = None
+
+  def get_passable(self):
+    return self.is_passable
 
   def get_char(self):
     return self.char
@@ -83,6 +87,7 @@ class Player(NPC):
     self.level = 0
     self.x = 0
     self.y = 0
+    self.is_passable = False
     self.currentMap = None
 
   def notify(self, event):
