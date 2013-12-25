@@ -29,4 +29,3 @@ class App:
     return True
 
 app = App()
-curses.wrapper( app.run )
