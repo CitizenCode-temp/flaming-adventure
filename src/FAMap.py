@@ -176,9 +176,10 @@ class Room:
         
 
 class MapCreator:
-    def __init__(self):
+    def __init__(self, app_collection):
         self.sizeX = 60
         self.sizeY = 25
+        self.app_collection = app_collection
 
     def make_rooms(self, n_rooms=6):
         def is_acceptable_overlap(room, rooms, ok_overlap=1):
@@ -192,12 +193,12 @@ class MapCreator:
                     return False
             return True
 
-        def make_hallway(r1, r2):
-            hallway_corners = can_make_hallway(r1, r2)
-            if hallway_corners:
-                c1, c2 = hallway_corners
-                x, y = c1
-                r = Room(x, y, self.sizeX-1, self.sizeY-1, corners=hallway_corners)
+#       def make_hallway(r1, r2):
+#           hallway_corners = can_make_hallway(r1, r2)
+#           if hallway_corners:
+#               c1, c2 = hallway_corners
+#               x, y = c1
+#               r = Room(x, y, self.sizeX-1, self.sizeY-1, corners=hallway_corners)
 
 
         min_room_size = 5
@@ -221,7 +222,7 @@ class MapCreator:
         mapArray = self.makeMapSectorArray( self.sizeX, self.sizeY )
         # randomly generate impassable areas
         rooms = self.make_rooms()
-        newMap = Map(_id, mapArray, rooms)
+        newMap = Map(_id, mapArray, self.app_collection, rooms=rooms)
 
         return newMap
 
@@ -236,15 +237,20 @@ class MapCreator:
         return mapArray
 
 class Map(FAModels.Model):
-    def __init__(self, _id, mapSectorArray, rooms=None):
+    def __init__(self, _id, mapSectorArray, app_collection, rooms=None):
         self._id = _id
         self.mapSectorArray = mapSectorArray
+        self.app_collection = app_collection
         self.rooms = rooms
         if self.rooms is not None:
             for r in self.rooms:
                 r.append_to_map_array(self.mapSectorArray)
+        self.npcs = self.make_npcs()
 
-    def get_random_player_start(self):
+    def get_npcs(self):
+        return self.npcs
+
+    def get_random_npc_start(self):
         while True:
             x, y = get_2d_random(
                 len(self.mapSectorArray) - 1,
@@ -255,10 +261,28 @@ class Map(FAModels.Model):
                     continue
             if not self.isPassable(x, y):
                 continue
+            if not self.is_empty(x, y):
+                continue
             return x, y
 
+    def insert_npc(self, npc):
+        x, y = self.get_random_npc_start()
+        map_sector = self.mapSectorArray[x][y]
+        map_sector.addCharacter(npc)
+        npc.setXY(x, y)
+        npc.setCurrentMap( self )
+
+    def make_npcs(self):
+        N = 10
+        npcs = []
+        for i in range(N):
+            npc = FAModels.NPC("npc-{0}".format(i), self.app_collection)
+            self.insert_npc(npc)
+            npcs.append(npc)
+        return npcs
+
     def insertPlayer(self, player):
-        x, y = self.get_random_player_start()
+        x, y = self.get_random_npc_start()
         map_sector = self.mapSectorArray[x][y]
         map_sector.addCharacter(player)
         player.setXY(x, y)
@@ -273,9 +297,18 @@ class Map(FAModels.Model):
         return [x, y]
 
     def isPassable(self, x, y):
-        if not self.contains(x, y):
+        if (
+            self.contains(x, y) and
+            self.mapSectorArray[x][y].isPassable()
+           ):
+            return True
+        else:
             return False
-        return self.mapSectorArray[x][y].isPassable()
+
+    def is_empty(self, x, y):
+        if not self.contains(x, y):
+            return False # Prevent out-of-bounds spawning
+        return self.mapSectorArray[x][y].is_empty()
 
     def contains(self, x, y):
         if (x >= 0 and x < self.getWidth() and y >=0 and y < self.getHeight()):

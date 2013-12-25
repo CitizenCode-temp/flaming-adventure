@@ -59,14 +59,14 @@ class AppCollection(Collection):
 class MapCollection(Collection):
   def __init__(self, appCollection, player):
     self.appCollection = appCollection
-    self.mapCreator = FAMap.MapCreator()
+    self.mapCreator = FAMap.MapCreator(appCollection)
     self.members = [ self.getInitialMap( player ) ]
     self.currentMap = self.members[0]
 
   def getInitialMap(self, player):
-    firstMap = self.mapCreator.createMap("map-0")
-    firstMap.insertPlayer( player )
-    return firstMap
+    first_map = self.mapCreator.createMap("map-0")
+    first_map.insertPlayer( player )
+    return first_map
 
   def getCurrentMap(self):
     return self.currentMap

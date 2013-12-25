@@ -8,6 +8,7 @@ import curses
 class App:
   def __init__(self):
     # appColl -- used for application level event notification
+    # sets up the game resources -- maps, npcs, etc..
     self.appColl = FACollections.AppCollection()
     self.appColl.add(self)
 
@@ -27,9 +28,5 @@ class App:
   def notify(self, event):
     return True
 
-def main():
-  app = App()
-  curses.wrapper( app.run )
-
-if __name__ == "__main__":
-  main()
+app = App()
+curses.wrapper( app.run )
