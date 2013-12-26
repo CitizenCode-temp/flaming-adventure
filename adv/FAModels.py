@@ -16,6 +16,7 @@ class NPC(Model):
     self._id = _id
     self.char = char
     self.appCollection = adv.app.appColl
+    self.appCollection.add(self)
     self.name = "Fluffy the vampire slayer (NPC)"
     self.maxHealth = 10.0
     self.health = 10.0
@@ -47,7 +48,15 @@ class NPC(Model):
     self.appCollection = appCollection
 
   def notify(self, event):
-    return True
+    if isinstance(event, FAEvents.StepEvent):
+        self.do_turn()
+
+  def do_turn(self):
+    self.appCollection.notify(
+      FAEvents.LogMsgEvent(
+        "A monster takes a turn"
+      )
+    )
 
   def move(self, mvEvent):
     x = self.x + mvEvent.getDx()
@@ -82,6 +91,7 @@ class Player(NPC):
   def __init__(self, _id):
     self._id = _id
     self.appCollection = adv.app.appColl
+    self.appCollection.add( self )
     self.name = "Flarg"
     self.maxHealth = 10.0
     self.health = 10.0

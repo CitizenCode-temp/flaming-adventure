@@ -17,6 +17,18 @@ class Collection:
     return len( self.members )
 
   def add(self, obj):
+    """
+    Add an object to the collection. It must not already be a member of the
+    collection and must implement a notify method.
+    """
+    if not hasattr(obj, 'notify'):
+      raise Exception(
+        "Tried to add {0} with no notify method to {1}".format(
+          obj,
+          self
+        )
+      )
+
     if (self.members.count(obj) == 0):
       self.members.append(obj) 
 
@@ -35,7 +47,6 @@ class AppCollection(Collection):
 
   def init_resources(self):
     self.player = FAModels.Player("player-0")
-    self.add( self.player )
     self.mapCollection = MapCollection(self.player) 
   
   def notifyMaps(self, event):
