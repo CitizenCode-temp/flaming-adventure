@@ -276,7 +276,7 @@ class Map(FAModels.Model):
         N = 10
         npcs = []
         for i in range(N):
-            npc = FAModels.NPC("npc-{0}".format(i), self.app_collection)
+            npc = FAModels.NPC("npc-{0}".format(i))
             self.insert_npc(npc)
             npcs.append(npc)
         return npcs

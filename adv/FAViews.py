@@ -1,3 +1,4 @@
+import adv
 import curses
 import FACollections
 import FAEvents
@@ -30,10 +31,10 @@ class View:
 
 """
 class AppView(View):
-  def __init__(self, model, screen, appCollection):
+  def __init__(self, model, screen):
     self.model = model
     self.screen = screen
-    self.appCollection = appCollection
+    self.appCollection = adv.app.appColl
     self.appCollection.setAppView(self)
     if not self.appCollection.getAppView():
       raise Exception("No appView in appCollection?")
@@ -47,10 +48,10 @@ class AppView(View):
     descVisWidth = 40
     
     self.viewCollection = FACollections.Collection()
-    self.mapView = MapView(mapHeight, windowWidth, self.appCollection, self.viewCollection)
-    self.statusView = StatusView(statusHeight, (windowHeight - cmdLineHeight), windowWidth, self.appCollection, self.viewCollection)
-    self.cmdLineView = CmdLineView(cmdLineHeight, windowHeight, windowWidth, self.appCollection, self.viewCollection)
-    self.dialogView = DialogView( descVisHeight, descVisWidth, 1, 10, self.appCollection, self.viewCollection)
+    self.mapView = MapView(mapHeight, windowWidth, self.viewCollection)
+    self.statusView = StatusView(statusHeight, (windowHeight - cmdLineHeight), windowWidth, self.viewCollection)
+    self.cmdLineView = CmdLineView(cmdLineHeight, windowHeight, windowWidth, self.viewCollection)
+    self.dialogView = DialogView( descVisHeight, descVisWidth, 1, 10, self.viewCollection)
 
   def notify(self, event):
     self.viewCollection.notify(event)
@@ -71,7 +72,7 @@ class AppView(View):
     return self.statusView
 
 class DialogView(View):
-  def __init__(self, height, width, yOffset, xOffset, appCollection, viewCollection):
+  def __init__(self, height, width, yOffset, xOffset, viewCollection):
     self.height = height
     self.width = width
     self.yOffset = yOffset
@@ -79,7 +80,7 @@ class DialogView(View):
     self.outerScreen = curses.newwin(height + 3, width + 2, self.yOffset - 1, self.xOffset -1)
     self.screen = curses.newpad(100, width) 
     self.screen.scrollok(True)
-    self.appCollection = appCollection
+    self.appCollection = adv.app.appColl
     self.viewCollection = viewCollection
     self.viewCollection.add(self)
 
@@ -120,10 +121,10 @@ class DialogView(View):
     curses.echo()
 
 class CursesView(View):
-  def __init__(self, height, windowHeight, windowWidth, appCollection, viewCollection):
+  def __init__(self, height, windowHeight, windowWidth, viewCollection):
     self.screen = curses.newwin(height, windowWidth, windowHeight-height, 0) 
     self.screen.scrollok(True)
-    self.appCollection = appCollection
+    self.appCollection = adv.app.appColl
     self.viewCollection = viewCollection
     self.viewCollection.add(self)
 
@@ -149,10 +150,10 @@ class CmdLineView(CursesView):
     return string
 
 class StatusView(CursesView):
-  def __init__(self, height, windowHeight, windowWidth, appCollection, viewCollection):
+  def __init__(self, height, windowHeight, windowWidth, viewCollection):
     self.screen = curses.newwin(height, windowWidth, windowHeight-height, 0) 
     self.screen.scrollok(True)
-    self.appCollection = appCollection
+    self.appCollection = adv.app.appColl
     self.viewCollection = viewCollection
     self.viewCollection.add(self)
     self.msgLog = ["You search futily for light in the dark cave"]
@@ -214,12 +215,12 @@ class MapView(CursesView):
     A notifieable view which contains references to the map collection as
     well as player and npc views.
   """
-  def __init__(self, height, windowWidth, appCollection, viewCollection):
+  def __init__(self, height, windowWidth, viewCollection):
     self.outerScreen = curses.newwin(height, windowWidth, 0, 0) 
     self.outerScreen.border(0)
     self.screen = curses.newwin(height-2, windowWidth-2, 1, 1) 
     self.screen.scrollok(True)
-    self.appCollection = appCollection
+    self.appCollection = adv.app.appColl
     self.mapCollection = self.appCollection.getMapCollection()
     self.viewCollection = viewCollection
     self.viewCollection.add(self)

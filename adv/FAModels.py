@@ -1,3 +1,4 @@
+import adv
 import FAEvents
 
 class Model:
@@ -11,10 +12,10 @@ class Model:
     return self._id
 
 class NPC(Model):
-  def __init__(self, _id, appCollection, char='m'):
+  def __init__(self, _id, char='m'):
     self._id = _id
     self.char = char
-    self.appCollection = appCollection
+    self.appCollection = adv.app.appColl
     self.name = "Fluffy the vampire slayer (NPC)"
     self.maxHealth = 10.0
     self.health = 10.0
@@ -78,9 +79,9 @@ class NPC(Model):
     return descrip
 
 class Player(NPC):
-  def __init__(self, _id, appCollection):
+  def __init__(self, _id):
     self._id = _id
-    self.appCollection = appCollection
+    self.appCollection = adv.app.appColl
     self.name = "Flarg"
     self.maxHealth = 10.0
     self.health = 10.0
