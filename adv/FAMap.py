@@ -288,8 +288,16 @@ class Map(FAModels.Model):
         player.setXY(x, y)
         player.setCurrentMap( self )
 
-    def movePlayer(self, player, x, y):
-        if not self.isPassable( x, y ):
+    def move_npc(self, npc, x, y):
+        if not self.isPassable(x, y):
+            return npc.getXY() 
+        [plX, plY] = npc.getXY() 
+        self.mapSectorArray[plX][plY].removeCharacter( npc )
+        self.mapSectorArray[x][y].addCharacter( npc )
+        return [x, y]
+
+    def move_player(self, player, x, y):
+        if not self.isPassable(x, y):
             return player.getXY() 
         [plX, plY] = player.getXY() 
         self.mapSectorArray[plX][plY].removeCharacter( player )

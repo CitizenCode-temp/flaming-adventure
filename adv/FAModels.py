@@ -52,16 +52,31 @@ class NPC(Model):
         self.do_turn()
 
   def do_turn(self):
-    self.appCollection.notify(
-      FAEvents.LogMsgEvent(
-        "A monster takes a turn"
-      )
-    )
+    self.hunt_player()
+
+  def hunt_player(self):
+    """
+      Step one tile in the player's direction
+    """
+    def get_d(z0, z1):
+      diff = z1 - z0
+      if diff == 0:
+        return 0
+      else:
+        return diff/abs(diff)
+
+    (cx, cy) = self.x, self.y
+    (px, py) = self.appCollection.getPlayer().getXY()
+    (dx, dy) = get_d(cx, px), get_d(cy, py)
+    self.move_x_y(cx + dx, cy + dy)
+
+  def move_x_y(self, x, y):
+    [self.x, self.y] = self.appCollection.getMapCollection().getCurrentMap().move_npc(self, x, y)
 
   def move(self, mvEvent):
     x = self.x + mvEvent.getDx()
     y = self.y + mvEvent.getDy()
-    [self.x, self.y] = self.appCollection.getMapCollection().getCurrentMap().move_npc(self, x, y)
+    self.move_x_y(x, y)
 
   def getName(self):
     return self.name
@@ -109,7 +124,7 @@ class Player(NPC):
   def mvPlayer(self, mvEvent):
     x = self.x + mvEvent.getDx()
     y = self.y + mvEvent.getDy()
-    [self.x, self.y] = self.appCollection.getMapCollection().getCurrentMap().movePlayer(self, x, y)
+    [self.x, self.y] = self.appCollection.getMapCollection().getCurrentMap().move_player(self, x, y)
 
   def getDescription(self):
     playerStr = self.name + " Lvl " + str(self.getLevel()) + " | HP " + str( self.getHealth() ) + "/" + str( self.getMaxHealth() ) + "\n\n"
