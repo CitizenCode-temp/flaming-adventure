@@ -274,7 +274,7 @@ class Map(model.Model):
         npc.setCurrentMap( self )
 
     def make_npcs(self):
-        N = 1
+        N = 5
         npcs = []
         for i in range(N):
             npc = characters.Monster("npc-{0}".format(i))
