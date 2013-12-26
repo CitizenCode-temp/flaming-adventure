@@ -1,7 +1,8 @@
 import random
 
-import FAModels
-from sectors import MapSector, WallMapSector, DoorMapSector, DebugMapSector
+import model
+import characters
+from sectors import MapSector, WallMapSector, DoorMapSector
 
 def get_2d_random(
     xmax,
@@ -236,7 +237,7 @@ class MapCreator:
 
         return mapArray
 
-class Map(FAModels.Model):
+class Map(model.Model):
     def __init__(self, _id, mapSectorArray, app_collection, rooms=None):
         self._id = _id
         self.mapSectorArray = mapSectorArray
@@ -276,7 +277,7 @@ class Map(FAModels.Model):
         N = 1
         npcs = []
         for i in range(N):
-            npc = FAModels.Monster("npc-{0}".format(i))
+            npc = characters.Monster("npc-{0}".format(i))
             self.insert_npc(npc)
             npcs.append(npc)
         return npcs

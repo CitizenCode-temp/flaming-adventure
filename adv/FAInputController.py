@@ -1,6 +1,6 @@
 import adv
 import FAParser
-import FAEvents
+import events
 
 class InputController:
   def __init__(self, appView):
@@ -11,7 +11,7 @@ class InputController:
     self.cmdHistory = []
 
   def notify(self, event):
-    if isinstance(event, FAEvents.StepEvent):
+    if isinstance(event, events.StepEvent):
       initialChar = self.appView.getCmdLineView().getCh()
       self.parser.parseChar(initialChar)
 

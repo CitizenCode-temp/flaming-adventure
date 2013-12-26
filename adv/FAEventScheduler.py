@@ -1,5 +1,5 @@
 import adv
-import FAEvents
+import events
 
 """
   EventScheduler
@@ -27,7 +27,7 @@ class EventScheduler:
     return len( self.queue )
 
   def notify(self, event):
-    if isinstance(event, FAEvents.StepEvent):
+    if isinstance(event, events.StepEvent):
       self.doTurn()
 
   def addEvent(self, event, delay=0.00):

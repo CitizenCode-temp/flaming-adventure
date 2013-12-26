@@ -7,7 +7,7 @@
 """
 import adv
 import FAMap
-import FAModels
+import characters
 
 class Collection:
   def __init__(self):
@@ -46,7 +46,7 @@ class Collection:
 class AppCollection(Collection):
 
   def init_resources(self):
-    self.player = FAModels.Player("player-0")
+    self.player = characters.Player("player-0")
     self.mapCollection = MapCollection(self.player) 
   
   def notifyMaps(self, event):

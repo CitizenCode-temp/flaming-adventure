@@ -1,7 +1,7 @@
-import FAModels
+import model
 import FACollections
 
-class MapSector(FAModels.Model):
+class MapSector(model.Model):
   def __init__(self, _id):
     self._id = _id
     self.characters = []

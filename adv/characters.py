@@ -1,15 +1,6 @@
 import adv
-import FAEvents
-
-class Model(object):
-  def __init__(self,_id):
-    self._id = _id 
-
-  def notify( self, event ):
-    return True 
-
-  def getId(self):
-    return self._id
+from model import Model
+import events
 
 class NPC(Model):
   def __init__(self, _id, char='m'):
@@ -88,7 +79,7 @@ class Monster(NPC):
         self.name = "Evil Crud (Monster)"
 
     def notify(self, event):
-        if isinstance(event, FAEvents.StepEvent):
+        if isinstance(event, events.StepEvent):
             self.do_turn()
 
     def do_turn(self):
@@ -126,7 +117,7 @@ class Player(NPC):
     self.currentMap = None
 
   def notify(self, event):
-    if isinstance(event, FAEvents.MoveEvent):
+    if isinstance(event, events.MoveEvent):
       self.move( event )
     return True
 
