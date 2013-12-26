@@ -1,3 +1,4 @@
+import adv
 import FAEvents
 
 """
@@ -16,9 +17,9 @@ import FAEvents
              Should probably be only internally used.
 """
 class EventScheduler:
-  def __init__(self, appCollection):
+  def __init__(self):
     self.queue = []
-    self.appCollection = appCollection
+    self.appCollection = adv.app.appColl
     self.appCollection.add(self)
     self.turnLength = 1.00
 

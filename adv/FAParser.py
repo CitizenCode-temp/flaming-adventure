@@ -1,8 +1,9 @@
+import adv
 import FAEvents
 
 class Parser:
-  def __init__(self, inputController, appCollection):
-    self.appCollection = appCollection
+  def __init__(self, inputController):
+    self.appCollection = adv.app.appColl
     self.inputController = inputController
     self.lookDict = self.initLookDictionary()
 

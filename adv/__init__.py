@@ -10,23 +10,22 @@ class App:
     # appColl -- used for application level event notification
     # sets up the game resources -- maps, npcs, etc..
     self.appColl = FACollections.AppCollection()
-    self.appColl.add(self)
 
   def run(self,screen):
     curses.echo()
     screen.scrollok(True)
 
+    # Setup game resources
+    self.appColl.init_resources()
+
     # These guys need screen
-    self.appView = FAViews.AppView(self, screen, self.appColl)
-    self.eventScheduler = FAEventScheduler.EventScheduler(self.appColl)
-    self.inputController = FAInputController.InputController(self.appView, self.appColl)
-    self.appStepper = FAAppStepper.AppStepper(self.appColl)
+    self.appView = FAViews.AppView(self, screen)
+    self.eventScheduler = FAEventScheduler.EventScheduler()
+    self.inputController = FAInputController.InputController(self.appView)
+    self.appStepper = FAAppStepper.AppStepper()
     
     self.appView.refresh()
     self.appStepper.run()
 
-  def notify(self, event):
-    return True
 
 app = App()
-curses.wrapper( app.run )

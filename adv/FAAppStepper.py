@@ -1,9 +1,10 @@
+import adv
 import FAEvents
 
 class AppStepper:
-  def __init__(self,appCollection):
+  def __init__(self):
     self.keep_going = True
-    self.appCollection = appCollection
+    self.appCollection = adv.app.appColl
     self.appCollection.add(self)
 
   def run(self):

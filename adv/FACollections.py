@@ -5,6 +5,7 @@
   One important role they play is forwarding Events to their members via the
   notify function.
 """
+import adv
 import FAMap
 import FAModels
 
@@ -16,6 +17,18 @@ class Collection:
     return len( self.members )
 
   def add(self, obj):
+    """
+    Add an object to the collection. It must not already be a member of the
+    collection and must implement a notify method.
+    """
+    if not hasattr(obj, 'notify'):
+      raise Exception(
+        "Tried to add {0} with no notify method to {1}".format(
+          obj,
+          self
+        )
+      )
+
     if (self.members.count(obj) == 0):
       self.members.append(obj) 
 
@@ -31,11 +44,10 @@ class Collection:
       m.notify(event)
 
 class AppCollection(Collection):
-  def __init__(self):
-    self.members = []
-    self.player = FAModels.Player("player-0", self)
-    self.add( self.player )
-    self.mapCollection = MapCollection(self, self.player) 
+
+  def init_resources(self):
+    self.player = FAModels.Player("player-0")
+    self.mapCollection = MapCollection(self.player) 
   
   def notifyMaps(self, event):
     self.mapCollection.notify(event)
@@ -57,9 +69,9 @@ class AppCollection(Collection):
     return self.mapCollection
 
 class MapCollection(Collection):
-  def __init__(self, appCollection, player):
-    self.appCollection = appCollection
-    self.mapCreator = FAMap.MapCreator(appCollection)
+  def __init__(self, player):
+    self.appCollection = adv.app.appColl
+    self.mapCreator = FAMap.MapCreator(self.appCollection)
     self.members = [ self.getInitialMap( player ) ]
     self.currentMap = self.members[0]
 
