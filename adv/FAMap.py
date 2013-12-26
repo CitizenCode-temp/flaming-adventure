@@ -260,7 +260,7 @@ class Map(model.Model):
             for r in self.rooms:
                 if r.contains(x, y):
                     continue
-            if not self.isPassable(x, y):
+            if not self.is_passable(x, y):
                 continue
             if not self.is_empty(x, y):
                 continue
@@ -290,17 +290,17 @@ class Map(model.Model):
         player.setCurrentMap( self )
 
     def move_char(self, char, x, y):
-        if not self.isPassable(x, y):
+        if not self.is_passable(x, y):
             return char.getXY() 
         [plX, plY] = char.getXY() 
         self.mapSectorArray[plX][plY].removeCharacter( char )
         self.mapSectorArray[x][y].addCharacter( char )
         return [x, y]
 
-    def isPassable(self, x, y):
+    def is_passable(self, x, y):
         if (
             self.contains(x, y) and
-            self.mapSectorArray[x][y].isPassable()
+            self.mapSectorArray[x][y].is_passable()
            ):
             return True
         else:

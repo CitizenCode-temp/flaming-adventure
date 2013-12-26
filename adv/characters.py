@@ -1,3 +1,6 @@
+import math
+import random
+
 import adv
 from model import Model
 import events
@@ -96,10 +99,23 @@ class Monster(NPC):
             else:
                 return diff/abs(diff)
 
+        sensitivity = 20
+        (cx, cy) = self.x, self.y
+
+        if self.get_player_dist() <= sensitivity:
+            (px, py) = self.appCollection.getPlayer().getXY()
+            (dx, dy) = get_d(cx, px), get_d(cy, py)
+        else:
+            (dx, dy) = random.randint(-1, 1), random.randint(-1, 1)
+
+        self.move_x_y(cx + dx, cy + dy)
+
+    def get_player_dist(self):
         (cx, cy) = self.x, self.y
         (px, py) = self.appCollection.getPlayer().getXY()
-        (dx, dy) = get_d(cx, px), get_d(cy, py)
-        self.move_x_y(cx + dx, cy + dy)
+        dist = int(math.sqrt((px - cx)**2 + (py - cy)**2))
+        return dist
+
 
 
 class Player(NPC):
