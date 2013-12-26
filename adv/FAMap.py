@@ -276,7 +276,7 @@ class Map(FAModels.Model):
         N = 1
         npcs = []
         for i in range(N):
-            npc = FAModels.NPC("npc-{0}".format(i))
+            npc = FAModels.Monster("npc-{0}".format(i))
             self.insert_npc(npc)
             npcs.append(npc)
         return npcs
@@ -288,20 +288,12 @@ class Map(FAModels.Model):
         player.setXY(x, y)
         player.setCurrentMap( self )
 
-    def move_npc(self, npc, x, y):
+    def move_char(self, char, x, y):
         if not self.isPassable(x, y):
-            return npc.getXY() 
-        [plX, plY] = npc.getXY() 
-        self.mapSectorArray[plX][plY].removeCharacter( npc )
-        self.mapSectorArray[x][y].addCharacter( npc )
-        return [x, y]
-
-    def move_player(self, player, x, y):
-        if not self.isPassable(x, y):
-            return player.getXY() 
-        [plX, plY] = player.getXY() 
-        self.mapSectorArray[plX][plY].removeCharacter( player )
-        self.mapSectorArray[x][y].addCharacter( player )
+            return char.getXY() 
+        [plX, plY] = char.getXY() 
+        self.mapSectorArray[plX][plY].removeCharacter( char )
+        self.mapSectorArray[x][y].addCharacter( char )
         return [x, y]
 
     def isPassable(self, x, y):

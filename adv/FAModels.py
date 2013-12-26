@@ -1,7 +1,7 @@
 import adv
 import FAEvents
 
-class Model:
+class Model(object):
   def __init__(self,_id):
     self._id = _id 
 
@@ -48,34 +48,14 @@ class NPC(Model):
     self.appCollection = appCollection
 
   def notify(self, event):
-    if isinstance(event, FAEvents.StepEvent):
-        self.do_turn()
-
-  def do_turn(self):
-    self.hunt_player()
-
-  def hunt_player(self):
-    """
-      Step one tile in the player's direction
-    """
-    def get_d(z0, z1):
-      diff = z1 - z0
-      if diff == 0:
-        return 0
-      else:
-        return diff/abs(diff)
-
-    (cx, cy) = self.x, self.y
-    (px, py) = self.appCollection.getPlayer().getXY()
-    (dx, dy) = get_d(cx, px), get_d(cy, py)
-    self.move_x_y(cx + dx, cy + dy)
+    return True
 
   def move_x_y(self, x, y):
-    [self.x, self.y] = self.appCollection.getMapCollection().getCurrentMap().move_npc(self, x, y)
+    [self.x, self.y] = self.appCollection.getMapCollection().getCurrentMap().move_char(self, x, y)
 
-  def move(self, mvEvent):
-    x = self.x + mvEvent.getDx()
-    y = self.y + mvEvent.getDy()
+  def move(self, mv_event):
+    x = self.x + mv_event.getDx()
+    y = self.y + mv_event.getDy()
     self.move_x_y(x, y)
 
   def getName(self):
@@ -98,9 +78,38 @@ class NPC(Model):
     self.y = y
 
   def getDescription(self):
-    descrip = self.name + "(NPC) Lvl " + str(self.getLevel()) + " | HP " + str( self.getHealth() ) + "/" + str( self.getMaxHealth() ) + "\n\n"
-    descrip += "A nondescript townsperson"
+    descrip = self.name + " Lvl " + str(self.getLevel()) + " | HP " + str( self.getHealth() ) + "/" + str( self.getMaxHealth() ) + "\n\n"
     return descrip
+
+
+class Monster(NPC):
+    def __init__(self, _id, char='m'):
+        super(Monster, self).__init__(_id, char)
+        self.name = "Evil Crud (Monster)"
+
+    def notify(self, event):
+        if isinstance(event, FAEvents.StepEvent):
+            self.do_turn()
+
+    def do_turn(self):
+        self.hunt_player()
+
+    def hunt_player(self):
+        """
+        Step one tile in the player's direction
+        """
+        def get_d(z0, z1):
+            diff = z1 - z0
+            if diff == 0:
+                return 0
+            else:
+                return diff/abs(diff)
+
+        (cx, cy) = self.x, self.y
+        (px, py) = self.appCollection.getPlayer().getXY()
+        (dx, dy) = get_d(cx, px), get_d(cy, py)
+        self.move_x_y(cx + dx, cy + dy)
+
 
 class Player(NPC):
   def __init__(self, _id):
@@ -118,15 +127,10 @@ class Player(NPC):
 
   def notify(self, event):
     if isinstance(event, FAEvents.MoveEvent):
-      self.mvPlayer( event )
+      self.move( event )
     return True
 
-  def mvPlayer(self, mvEvent):
-    x = self.x + mvEvent.getDx()
-    y = self.y + mvEvent.getDy()
-    [self.x, self.y] = self.appCollection.getMapCollection().getCurrentMap().move_player(self, x, y)
-
   def getDescription(self):
-    playerStr = self.name + " Lvl " + str(self.getLevel()) + " | HP " + str( self.getHealth() ) + "/" + str( self.getMaxHealth() ) + "\n\n"
-    playerStr += "A long description here, will tell the tale of adventures past. The story of scars, tired eyes, and hunger."
-    return playerStr
+    desc = self.name + " Lvl " + str(self.getLevel()) + " | HP " + str( self.getHealth() ) + "/" + str( self.getMaxHealth() ) + "\n\n"
+    desc += "A long description here, will tell the tale of adventures past. The story of scars, tired eyes, and hunger."
+    return desc
