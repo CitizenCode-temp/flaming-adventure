@@ -1,5 +1,5 @@
 import adv
-import FAEvents
+import events
 
 class AppStepper:
   def __init__(self):
@@ -9,10 +9,10 @@ class AppStepper:
 
   def run(self):
     while (self.keep_going):
-      event = FAEvents.StepEvent()
+      event = events.StepEvent()
       self.appCollection.notify(event)
 
   def notify(self, event):
-    if isinstance(event, FAEvents.QuitEvent):
+    if isinstance(event, events.QuitEvent):
       self.keep_going = False
     return True

@@ -1,7 +1,7 @@
-import FAModels
+import model
 import FACollections
 
-class MapSector(FAModels.Model):
+class MapSector(model.Model):
   def __init__(self, _id):
     self._id = _id
     self.characters = []
@@ -15,7 +15,7 @@ class MapSector(FAModels.Model):
   def getStrRep(self):
     return self.strRep
 
-  def isPassable(self):
+  def is_passable(self):
     p = self.passable
     if p:
       for c in self.characters:

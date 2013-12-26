@@ -1,7 +1,7 @@
 import adv
 import curses
 import FACollections
-import FAEvents
+import events
 """
   View
 """
@@ -18,7 +18,7 @@ class View:
     return True
 
   def notify(self, event):
-    if isinstance(event, FAEvents.StepEvent):
+    if isinstance(event, events.StepEvent):
       self.refresh()
     return True
 
@@ -85,7 +85,7 @@ class DialogView(View):
     self.viewCollection.add(self)
 
   def notify(self, event):
-    if isinstance(event, FAEvents.DialogEvent):
+    if isinstance(event, events.DialogEvent):
       self.refresh( event.getDescription() )
 
   def refresh(self, txt):
@@ -133,7 +133,7 @@ class CursesView(View):
     return True
 
   def notify(self,event):
-    if isinstance(event, FAEvents.StepEvent):
+    if isinstance(event, events.StepEvent):
       self.refresh()
     return True
 
@@ -194,9 +194,9 @@ class StatusView(CursesView):
     self.msgLog.insert(0,msg)
 
   def notify(self, event):
-    if isinstance(event, FAEvents.LogMsgEvent):
+    if isinstance(event, events.LogMsgEvent):
       self.logMsg( event.getMsg() )
-    if isinstance(event, FAEvents.StepEvent):
+    if isinstance(event, events.StepEvent):
       self.refresh()
     return True
 

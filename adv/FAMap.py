@@ -1,7 +1,8 @@
 import random
 
-import FAModels
-from sectors import MapSector, WallMapSector, DoorMapSector, DebugMapSector
+import model
+import characters
+from sectors import MapSector, WallMapSector, DoorMapSector
 
 def get_2d_random(
     xmax,
@@ -236,7 +237,7 @@ class MapCreator:
 
         return mapArray
 
-class Map(FAModels.Model):
+class Map(model.Model):
     def __init__(self, _id, mapSectorArray, app_collection, rooms=None):
         self._id = _id
         self.mapSectorArray = mapSectorArray
@@ -259,7 +260,7 @@ class Map(FAModels.Model):
             for r in self.rooms:
                 if r.contains(x, y):
                     continue
-            if not self.isPassable(x, y):
+            if not self.is_passable(x, y):
                 continue
             if not self.is_empty(x, y):
                 continue
@@ -273,10 +274,10 @@ class Map(FAModels.Model):
         npc.setCurrentMap( self )
 
     def make_npcs(self):
-        N = 1
+        N = 5
         npcs = []
         for i in range(N):
-            npc = FAModels.NPC("npc-{0}".format(i))
+            npc = characters.Monster("npc-{0}".format(i))
             self.insert_npc(npc)
             npcs.append(npc)
         return npcs
@@ -288,18 +289,18 @@ class Map(FAModels.Model):
         player.setXY(x, y)
         player.setCurrentMap( self )
 
-    def movePlayer(self, player, x, y):
-        if not self.isPassable( x, y ):
-            return player.getXY() 
-        [plX, plY] = player.getXY() 
-        self.mapSectorArray[plX][plY].removeCharacter( player )
-        self.mapSectorArray[x][y].addCharacter( player )
+    def move_char(self, char, x, y):
+        if not self.is_passable(x, y):
+            return char.getXY() 
+        [plX, plY] = char.getXY() 
+        self.mapSectorArray[plX][plY].removeCharacter( char )
+        self.mapSectorArray[x][y].addCharacter( char )
         return [x, y]
 
-    def isPassable(self, x, y):
+    def is_passable(self, x, y):
         if (
             self.contains(x, y) and
-            self.mapSectorArray[x][y].isPassable()
+            self.mapSectorArray[x][y].is_passable()
            ):
             return True
         else:
