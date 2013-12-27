@@ -167,7 +167,7 @@ class Player(NPC, Fightable):
     return True
 
   def getDescription(self):
-    desc = self.name + " Lvl " + str(self.getLevel()) + " | HP " + str( self.getHealth() ) + "/" + str( self.getMaxHealth() ) + "\n\n"
+    desc = self.name + " Lvl " + str(self.get_level()) + " | HP " + str( self.get_health() ) + "/" + str( self.get_max_health() ) + "\n\n"
     desc += "A long description here, will tell the tale of adventures past. The story of scars, tired eyes, and hunger."
     return desc
 
