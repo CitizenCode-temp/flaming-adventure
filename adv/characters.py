@@ -2,11 +2,13 @@ import math
 import random
 
 import adv
+from fightable import Fightable
 from model import Model
 import events
 
 class NPC(Model):
   def __init__(self, _id, char='m'):
+    super(NPC, self).__init__(_id, char=char)
     self._id = _id
     self.char = char
     self.appCollection = adv.app.appColl
@@ -19,6 +21,17 @@ class NPC(Model):
     self.y = 0
     self.is_passable = False
     self.currentMap = None
+
+  def resolve_char_contact(self, char):
+    self.appCollection.notify(
+      events.LogMsgEvent(
+        "{0} resolving against {1}".format(
+            self.name,
+            char.getName()
+        )
+
+      )
+    )
 
   def get_passable(self):
     return self.is_passable
@@ -76,10 +89,22 @@ class NPC(Model):
     return descrip
 
 
-class Monster(NPC):
+class Monster(NPC, Fightable):
     def __init__(self, _id, char='m'):
-        super(Monster, self).__init__(_id, char)
+        super(Monster, self).__init__(_id, char=char)
         self.name = "Evil Crud (Monster)"
+
+    def resolve_char_contact(self, char):
+        if hasattr(char, 'fightable'):
+            self.appCollection.notify(
+                events.LogMsgEvent(
+                    "{0} fightable resolving against {1}".format(
+                            self.name,
+                            char.getName()
+                    )
+
+                )
+            )
 
     def notify(self, event):
         if isinstance(event, events.StepEvent):
@@ -118,19 +143,10 @@ class Monster(NPC):
 
 
 
-class Player(NPC):
+class Player(NPC, Fightable):
   def __init__(self, _id):
-    self._id = _id
-    self.appCollection = adv.app.appColl
-    self.appCollection.add( self )
+    super(Player, self).__init__(_id, char='@')
     self.name = "Flarg"
-    self.maxHealth = 10.0
-    self.health = 10.0
-    self.level = 0
-    self.x = 0
-    self.y = 0
-    self.is_passable = False
-    self.currentMap = None
 
   def notify(self, event):
     if isinstance(event, events.MoveEvent):
@@ -141,3 +157,15 @@ class Player(NPC):
     desc = self.name + " Lvl " + str(self.getLevel()) + " | HP " + str( self.getHealth() ) + "/" + str( self.getMaxHealth() ) + "\n\n"
     desc += "A long description here, will tell the tale of adventures past. The story of scars, tired eyes, and hunger."
     return desc
+
+  def resolve_char_contact(self, char):
+    if hasattr(char, 'fightable'):
+      self.appCollection.notify(
+        events.LogMsgEvent(
+          "{0} fightable resolving against {1}".format(
+              self.name,
+              char.getName()
+          )
+
+        )
+      )

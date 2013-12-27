@@ -289,9 +289,24 @@ class Map(model.Model):
         player.setXY(x, y)
         player.setCurrentMap( self )
 
+    def character_contact_check(self, char, x, y):
+        ms = self.get_map_sector(x, y)
+        if ms:
+            for c in ms.get_characters():
+                char.resolve_char_contact(c)
+
+    def get_map_sector(self, x, y):
+        if self.contains(x, y):
+            return self.mapSectorArray[x][y]
+        else:
+            return None
+
     def move_char(self, char, x, y):
+        self.character_contact_check(char, x, y)
+
         if not self.is_passable(x, y):
             return char.getXY() 
+
         [plX, plY] = char.getXY() 
         self.mapSectorArray[plX][plY].removeCharacter( char )
         self.mapSectorArray[x][y].addCharacter( char )

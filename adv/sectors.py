@@ -29,6 +29,9 @@ class MapSector(model.Model):
   def addCharacter(self, charObj):
     self.characters.append(charObj)
 
+  def get_characters(self):
+    return self.characters
+
   def is_empty(self):
     return len(self.characters) == 0
 
