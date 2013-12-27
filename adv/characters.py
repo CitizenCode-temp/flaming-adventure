@@ -25,6 +25,13 @@ class NPC(Model):
     self.is_passable = False
     self.currentMap = None
 
+  def die(self):
+      self.char = 'x'
+
+  @property
+  def is_dead(self):
+      return self.health > 0
+
   def get_defense(self):
     return self.defense
 
@@ -88,6 +95,8 @@ class NPC(Model):
 
   def set_health(self, health):
     self.health = health
+    if self.health <= 0:
+        self.die()
 
   def getXY(self):
     return [self.x, self.y]
@@ -111,7 +120,8 @@ class Monster(NPC, Fightable):
 
     def notify(self, event):
         if isinstance(event, events.StepEvent):
-            self.do_turn()
+            if self.is_alive():
+                self.do_turn()
 
     def do_turn(self):
         self.hunt_player()
