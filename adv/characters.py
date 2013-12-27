@@ -95,16 +95,7 @@ class Monster(NPC, Fightable):
         self.name = "Evil Crud (Monster)"
 
     def resolve_char_contact(self, char):
-        if hasattr(char, 'fightable'):
-            self.appCollection.notify(
-                events.LogMsgEvent(
-                    "{0} fightable resolving against {1}".format(
-                            self.name,
-                            char.getName()
-                    )
-
-                )
-            )
+        self.do_combat(char)
 
     def notify(self, event):
         if isinstance(event, events.StepEvent):
@@ -159,13 +150,4 @@ class Player(NPC, Fightable):
     return desc
 
   def resolve_char_contact(self, char):
-    if hasattr(char, 'fightable'):
-      self.appCollection.notify(
-        events.LogMsgEvent(
-          "{0} fightable resolving against {1}".format(
-              self.name,
-              char.getName()
-          )
-
-        )
-      )
+    self.do_combat(char)
