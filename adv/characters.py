@@ -17,10 +17,22 @@ class NPC(Model):
     self.maxHealth = 10.0
     self.health = 10.0
     self.level = 0
+    self.strength = 2
+    self.defense = 1
+    self.speed = 1
     self.x = 0
     self.y = 0
     self.is_passable = False
     self.currentMap = None
+
+  def get_defense(self):
+    return self.defense
+
+  def get_speed(self):
+    return self.speed
+
+  def is_alive(self):
+      return self.health > 0
 
   def resolve_char_contact(self, char):
     self.appCollection.notify(
@@ -45,10 +57,10 @@ class NPC(Model):
   def getCurrentMap(self):
     return self.currentMap
 
-  def getMaxHealth(self):
+  def get_max_health(self):
     return self.maxHealth
 
-  def getLevel(self):
+  def get_level(self):
     return self.level
 
   def setAppCollection(self, appCollection):
@@ -65,16 +77,16 @@ class NPC(Model):
     y = self.y + mv_event.getDy()
     self.move_x_y(x, y)
 
-  def getName(self):
+  def get_name(self):
     return self.name
 
-  def setName(self, name):
+  def set_name(self, name):
     self.name = name
 
-  def getHealth(self):
+  def get_health(self):
     return self.health
 
-  def setHealth(self, health):
+  def set_health(self, health):
     self.health = health
 
   def getXY(self):

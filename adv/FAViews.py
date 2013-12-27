@@ -171,10 +171,10 @@ class StatusView(CursesView):
   def refresh(self):
     self.screen.clear() 
 
-    name = self.appCollection.getPlayer().getName()
-    hp = str( self.appCollection.getPlayer().getHealth() )
-    maxHp = str( self.appCollection.getPlayer().getMaxHealth() )
-    level = str( self.appCollection.getPlayer().getLevel() )
+    name = self.appCollection.getPlayer().get_name()
+    hp = str( self.appCollection.getPlayer().get_health() )
+    maxHp = str( self.appCollection.getPlayer().get_max_health() )
+    level = str( self.appCollection.getPlayer().get_level() )
 
     self.screen.addstr(0,0, name + " Lvl " + level + " | A5 D3 S1 | HP " + hp + "/" + maxHp + " | " + self.statusFlag + " | " + self.lastCmd)
 
