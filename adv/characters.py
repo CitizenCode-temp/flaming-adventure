@@ -161,6 +161,12 @@ class Player(NPC, Fightable):
     super(Player, self).__init__(_id, char='@')
     self.name = "Flarg"
 
+  def die(self):
+    self.char = 'X'
+    self.appCollection.notify(
+        events.PlayerDeathEvent()
+    )
+
   def notify(self, event):
     if isinstance(event, events.MoveEvent):
       self.move( event )
