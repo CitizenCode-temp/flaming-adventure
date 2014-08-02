@@ -1,4 +1,6 @@
 import adv
+import characters
+import colors
 import curses
 import FACollections
 import events
@@ -98,9 +100,10 @@ class DialogView(View):
 
     curses.noecho()
     self.screen.clear()
-    self.screen.addstr(0, 0, "j/k -- scroll down/up | q -- quit dialog") # Documentation line
+    self.screen.addstr(0, 0, "j/k -- scroll down/up | y/n -- yes/no, q -- quit") # Documentation line
     self.screen.addstr(2, 0, txt)
 
+   
     # Enter loop with simple interactivity
     while True:
       self.outerScreen.box()
@@ -171,10 +174,10 @@ class StatusView(CursesView):
   def refresh(self):
     self.screen.clear() 
 
-    name = self.appCollection.getPlayer().getName()
-    hp = str( self.appCollection.getPlayer().getHealth() )
-    maxHp = str( self.appCollection.getPlayer().getMaxHealth() )
-    level = str( self.appCollection.getPlayer().getLevel() )
+    name = self.appCollection.getPlayer().get_name()
+    hp = str( self.appCollection.getPlayer().get_health() )
+    maxHp = str( self.appCollection.getPlayer().get_max_health() )
+    level = str( self.appCollection.getPlayer().get_level() )
 
     self.screen.addstr(0,0, name + " Lvl " + level + " | A5 D3 S1 | HP " + hp + "/" + maxHp + " | " + self.statusFlag + " | " + self.lastCmd)
 
@@ -204,10 +207,14 @@ class NPCView(View):
   def __init__(self, screen, npc):
     self.npc = npc
     self.screen = screen
+    if isinstance(npc, characters.Monster):
+        self.color = colors.get_colors('monster')
+    else:
+        self.color = colors.get_colors('default')
 
   def refresh(self):
     x, y = self.npc.getXY()
-    self.screen.addstr(y, x, self.npc.get_char())
+    self.screen.addstr(y, x, self.npc.get_char(), self.color)
 
 
 class MapView(CursesView):
@@ -242,6 +249,13 @@ class MapView(CursesView):
         v.refresh()
     self.playerView.refresh()
     self.screen.noutrefresh()
+  
+  def get_sector_colors(self, str_rep):
+      sector_colors = {
+          '.': colors.get_colors('floor'),
+          '#': colors.get_colors('wall')
+      }
+      return sector_colors.get(str_rep, colors.get_colors('default'))
 
   def refreshMap(self):
     # TODO make sure the screen is big enough
@@ -249,13 +263,16 @@ class MapView(CursesView):
     mapArr = currMap.getMapSectorArray()
     for x in range(currMap.getWidth()):
       for y in range(currMap.getHeight()):
-            self.screen.addstr(y, x, mapArr[x][y].getStrRep())
+            s = mapArr[x][y].getStrRep()
+            c = self.get_sector_colors(s)
+            self.screen.addstr(y, x, s, c)
 
 class PlayerView(View):
   def __init__(self, screen, player):
     self.screen = screen
     self.player = player
+    self.color = colors.get_colors('player')
 
   def refresh(self):
     x, y = self.player.getXY()
-    self.screen.addstr(y,x,"@")
+    self.screen.addstr(y, x, self.player.get_char(), self.color)

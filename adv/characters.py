@@ -2,11 +2,13 @@ import math
 import random
 
 import adv
+from fightable import Fightable
 from model import Model
 import events
 
 class NPC(Model):
   def __init__(self, _id, char='m'):
+    super(NPC, self).__init__(_id, char=char)
     self._id = _id
     self.char = char
     self.appCollection = adv.app.appColl
@@ -15,10 +17,40 @@ class NPC(Model):
     self.maxHealth = 10.0
     self.health = 10.0
     self.level = 0
+    self.strength = 2
+    self.defense = 1
+    self.speed = 1
     self.x = 0
     self.y = 0
     self.is_passable = False
     self.currentMap = None
+
+  def die(self):
+      self.char = 'x'
+
+  @property
+  def is_dead(self):
+      return self.health > 0
+
+  def get_defense(self):
+    return self.defense
+
+  def get_speed(self):
+    return self.speed
+
+  def is_alive(self):
+      return self.health > 0
+
+  def resolve_char_contact(self, char):
+    self.appCollection.notify(
+      events.LogMsgEvent(
+        "{0} resolving against {1}".format(
+            self.name,
+            char.getName()
+        )
+
+      )
+    )
 
   def get_passable(self):
     return self.is_passable
@@ -32,10 +64,10 @@ class NPC(Model):
   def getCurrentMap(self):
     return self.currentMap
 
-  def getMaxHealth(self):
+  def get_max_health(self):
     return self.maxHealth
 
-  def getLevel(self):
+  def get_level(self):
     return self.level
 
   def setAppCollection(self, appCollection):
@@ -52,17 +84,19 @@ class NPC(Model):
     y = self.y + mv_event.getDy()
     self.move_x_y(x, y)
 
-  def getName(self):
+  def get_name(self):
     return self.name
 
-  def setName(self, name):
+  def set_name(self, name):
     self.name = name
 
-  def getHealth(self):
+  def get_health(self):
     return self.health
 
-  def setHealth(self, health):
+  def set_health(self, health):
     self.health = health
+    if self.health <= 0:
+        self.die()
 
   def getXY(self):
     return [self.x, self.y]
@@ -76,14 +110,18 @@ class NPC(Model):
     return descrip
 
 
-class Monster(NPC):
+class Monster(NPC, Fightable):
     def __init__(self, _id, char='m'):
-        super(Monster, self).__init__(_id, char)
+        super(Monster, self).__init__(_id, char=char)
         self.name = "Evil Crud (Monster)"
+
+    def resolve_char_contact(self, char):
+        self.do_combat(char)
 
     def notify(self, event):
         if isinstance(event, events.StepEvent):
-            self.do_turn()
+            if self.is_alive():
+                self.do_turn()
 
     def do_turn(self):
         self.hunt_player()
@@ -118,19 +156,16 @@ class Monster(NPC):
 
 
 
-class Player(NPC):
+class Player(NPC, Fightable):
   def __init__(self, _id):
-    self._id = _id
-    self.appCollection = adv.app.appColl
-    self.appCollection.add( self )
+    super(Player, self).__init__(_id, char='@')
     self.name = "Flarg"
-    self.maxHealth = 10.0
-    self.health = 10.0
-    self.level = 0
-    self.x = 0
-    self.y = 0
-    self.is_passable = False
-    self.currentMap = None
+
+  def die(self):
+    self.char = 'X'
+    self.appCollection.notify(
+        events.PlayerDeathEvent()
+    )
 
   def notify(self, event):
     if isinstance(event, events.MoveEvent):
@@ -138,6 +173,9 @@ class Player(NPC):
     return True
 
   def getDescription(self):
-    desc = self.name + " Lvl " + str(self.getLevel()) + " | HP " + str( self.getHealth() ) + "/" + str( self.getMaxHealth() ) + "\n\n"
+    desc = self.name + " Lvl " + str(self.get_level()) + " | HP " + str( self.get_health() ) + "/" + str( self.get_max_health() ) + "\n\n"
     desc += "A long description here, will tell the tale of adventures past. The story of scars, tired eyes, and hunger."
     return desc
+
+  def resolve_char_contact(self, char):
+    self.do_combat(char)

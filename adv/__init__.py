@@ -4,6 +4,10 @@ import FAAppStepper
 import FAViews
 import FAEventScheduler
 import curses
+import locale
+
+
+locale.setlocale(locale.LC_ALL,"")
 
 class App:
   def __init__(self):

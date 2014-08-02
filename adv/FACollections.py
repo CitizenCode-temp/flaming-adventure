@@ -6,8 +6,9 @@
   notify function.
 """
 import adv
-import FAMap
 import characters
+import events
+import FAMap
 
 class Collection:
   def __init__(self):
@@ -67,6 +68,12 @@ class AppCollection(Collection):
 
   def getMapCollection(self):
     return self.mapCollection
+
+  def notify(self, event):
+    if isinstance(event, events.PlayerDeathEvent):
+        self.notify(events.QuitEvent())
+    for m in self.members:
+      m.notify(event)
 
 class MapCollection(Collection):
   def __init__(self, player):
