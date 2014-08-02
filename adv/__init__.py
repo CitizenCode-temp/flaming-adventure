@@ -51,6 +51,7 @@ class App:
         screen.scrollok(True)
 
         # Display a splash/intro screen
+        self.game_intro(screen)
 
         # Create application resources (player, maps, etc...)
         self.initialize_game_resources(screen)
@@ -59,6 +60,7 @@ class App:
         # Setup game resources
         player = characters.Player("default-player")
         self.appColl.set_player(player)
+        
         self.appColl.init_map_collection()
 
         # These guys need screen
@@ -66,6 +68,13 @@ class App:
         self.eventScheduler = FAEventScheduler.EventScheduler()
         self.inputController = FAInputController.InputController(self.app_view)
         self.appStepper = FAAppStepper.AppStepper()
+        self.app_view.refresh()
+
+    def game_intro(self, screen):
+        """
+        Display the game title and intro info.
+        """
+        self.app_view = FAViews.IntroView(self, screen)
         self.app_view.refresh()
 
     def game_loop(self):

@@ -40,10 +40,6 @@ class Collection:
     def remove(self, obj):
       self.members.remove(obj)
 
-    def forEach(self, func):
-      for m in self.members:
-        func(m)
-
     def notify(self, event):
       for m in self.members:
         m.notify(event)
@@ -57,9 +53,6 @@ class AppCollection(Collection):
   
     def init_map_collection(self):
         self.mapCollection = MapCollection(self.player) 
-    
-    def notifyMaps(self, event):
-        self.mapCollection.notify(event)
   
     def set_player(self,p):
         self.player = p

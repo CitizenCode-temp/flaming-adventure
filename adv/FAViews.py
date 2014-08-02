@@ -61,6 +61,40 @@ class AppView(View):
         raise NotImplementedError("Views must implement a refresh method")
 
 
+class IntroView(AppView):
+    """
+    IntroView
+
+    Display some basic information about the game.
+    """
+    def __init__(self, model, screen):
+        super(IntroView, self).__init__(model, screen)
+        self.outerScreen = curses.newwin(self.windowHeight, self.windowWidth, 0, 0) 
+        self.outerScreen.border(0)
+        self.inner_height = self.windowHeight - 2
+        self.inner_width = self.windowWidth - 2
+        self.screen = curses.newwin(self.inner_height, self.inner_width, 1, 1) 
+        self.screen.scrollok(True)
+
+    def refresh(self):
+        self.screen.clear()
+        self.outerScreen.box()
+        self.outerScreen.noutrefresh()
+        self.refresh_inner_screen()
+        self.screen.noutrefresh()
+        self.screen.getch(0,0) # Get the command, off the screen, to pause
+
+    def refresh_inner_screen(self):
+        # TODO make sure the screen is big enough
+            bg_color = colors.get_colors('intro_bg')
+            text_color = colors.get_colors('intro_text')
+            for x in range(self.inner_width):
+                for y in range(self.inner_height):
+                    # Same color bg/fg?
+                    self.screen.addstr(y, x, '.', bg_color)
+            self.screen.addstr(20, 10, 'Welcome to flaming-adventure', text_color)
+
+
 class AdventureView(AppView):
     """
       AdventureView
