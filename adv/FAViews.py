@@ -16,7 +16,7 @@ class View(object):
     """
     :param model: The object the view represents
     :param screen: A curses screen reference for updating
-    :param collection: Not sure yet.
+    :param collection: sub-views for notification
     """
     self.model = model
     self.screen = screen
@@ -44,7 +44,6 @@ class AppView(View):
     def __init__(self, model, screen):
         self.model = model
         self.screen = screen
-        self.appCollection = adv.app.appColl
 
         # Holds all the sub-views
         self.viewCollection = FACollections.Collection()
@@ -138,71 +137,80 @@ class AdventureView(AppView):
         return self.statusView
 
 class DialogView(View):
-  def __init__(self, height, width, yOffset, xOffset, viewCollection):
-    self.height = height
-    self.width = width
-    self.yOffset = yOffset
-    self.xOffset = xOffset
-    self.outerScreen = curses.newwin(height + 3, width + 2, self.yOffset - 1, self.xOffset -1)
-    self.screen = curses.newpad(100, width) 
-    self.screen.scrollok(True)
-    self.appCollection = adv.app.appColl
-    self.viewCollection = viewCollection
-    self.viewCollection.add(self)
+    """
+    DialogView
+    A bordered pop up window with basic interactivity.
+    """
+    def __init__(self, height, width, yOffset, xOffset, viewCollection):
+        self.height = height
+        self.width = width
+        self.yOffset = yOffset
+        self.xOffset = xOffset
+        self.outerScreen = curses.newwin(height + 3, width + 2, self.yOffset - 1, self.xOffset -1)
+        self.screen = curses.newpad(100, width) 
+        self.screen.scrollok(True)
+        self.appCollection = adv.app.appColl
+        self.viewCollection = viewCollection
+        self.viewCollection.add(self)
 
-  def notify(self, event):
-    if isinstance(event, events.DialogEvent):
-      self.refresh( event.getDescription() )
+    def notify(self, event):
+        if isinstance(event, events.DialogEvent):
+            self.refresh( event.getDescription() )
 
-  def refresh(self, txt):
-    # Compute row and scrolling information
-    currRow = 0
-    nTxtRows = (len( txt ) // self.width) + 3 # + 1 due to array indexing and + 2 for the documentation and newline
-    maxRow = 0
-    if nTxtRows > self.height:
-      maxRow = nTxtRows - self.height
+    def refresh(self, txt):
+        # Compute row and scrolling information
+        currRow = 0
+        nTxtRows = (len( txt ) // self.width) + 3 # + 1 due to array indexing and + 2 for the documentation and newline
+        maxRow = 0
+        if nTxtRows > self.height:
+            maxRow = nTxtRows - self.height
 
-    curses.noecho()
-    self.screen.clear()
-    self.screen.addstr(0, 0, "j/k -- scroll down/up | y/n -- yes/no, q -- quit") # Documentation line
-    self.screen.addstr(2, 0, txt)
+        curses.noecho()
+        self.screen.clear()
+        self.screen.addstr(0, 0, "j/k -- scroll down/up | y/n -- yes/no, q -- quit") # Documentation line
+        self.screen.addstr(2, 0, txt)
 
-   
-    # Enter loop with simple interactivity
-    while True:
-      self.outerScreen.box()
-      self.outerScreen.noutrefresh()
-      self.screen.refresh(currRow, 0, self.yOffset, self.xOffset, self.yOffset + self.height, self.xOffset + self.width)
-      c = self.screen.getch()
-      if c == 106 and currRow < maxRow: # j scroll down
-        currRow += 1
-      if c == 107 and currRow > 0: # k scroll up
-        currRow -= 1
-      if c == 113: # q quit dialog
-        break
+     
+        # Enter loop with simple interactivity
+        while True:
+            self.outerScreen.box()
+            self.outerScreen.noutrefresh()
+            self.screen.refresh(currRow, 0, self.yOffset, self.xOffset, self.yOffset + self.height, self.xOffset + self.width)
+            c = self.screen.getch()
+            if c == 106 and currRow < maxRow: # j scroll down
+                currRow += 1
+            if c == 107 and currRow > 0: # k scroll up
+                currRow -= 1
+            if c == 113: # q quit dialog
+                break
 
-    self.outerScreen.clear()
-    self.outerScreen.noutrefresh()
-    self.screen.clear()
-    self.screen.refresh(currRow, 0, 1, self.xOffset, 11, self.xOffset + self.width)
-    curses.echo()
+        self.outerScreen.clear()
+        self.outerScreen.noutrefresh()
+        self.screen.clear()
+        self.screen.refresh(currRow, 0, 1, self.xOffset, 11, self.xOffset + self.width)
+        curses.echo()
 
 class CursesView(View):
-  def __init__(self, height, windowHeight, windowWidth, viewCollection):
-    self.screen = curses.newwin(height, windowWidth, windowHeight-height, 0) 
-    self.screen.scrollok(True)
-    self.appCollection = adv.app.appColl
-    self.viewCollection = viewCollection
-    self.viewCollection.add(self)
+    """
+    CursesView
+    
+    A generic sub-view class with curses hooks.
+    """
+    def __init__(self, height, windowHeight, windowWidth, viewCollection):
+        self.screen = curses.newwin(height, windowWidth, windowHeight-height, 0) 
+        self.screen.scrollok(True)
+        self.appCollection = adv.app.appColl
+        self.viewCollection = viewCollection
+        self.viewCollection.add(self)
 
-  def refresh(self):
-    self.screen.noutrefresh()
-    return True
+    def refresh(self):
+        self.screen.noutrefresh()
+        return True
 
-  def notify(self,event):
-    if isinstance(event, events.StepEvent):
-      self.refresh()
-    return True
+    def notify(self,event):
+        if isinstance(event, events.StepEvent):
+            self.refresh()
+        return True
 
 class CmdLineView(CursesView):
   def getCh(self):
