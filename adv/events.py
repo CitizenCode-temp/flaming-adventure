@@ -59,3 +59,7 @@ class DialogEvent(Event):
 
   def getDescription(self):
     return self.description
+
+class PlayerDeathEvent(Event):
+  def __init__(self):
+    self.name = "PlayerDeathEvent"
