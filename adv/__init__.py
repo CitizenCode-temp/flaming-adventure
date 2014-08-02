@@ -92,9 +92,10 @@ class App:
         """
         pass
 
-    def player_death(self):
+    def game_quit(self):
         """
-        The player has died. Display an outro message and option to:
+        e.g. 'quit' command or the player has died. Display an outro message
+        and option to:
           - TODO retry
           - TODO undead mode
           - TODO mulligan

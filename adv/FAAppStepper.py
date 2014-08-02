@@ -16,8 +16,8 @@ class AppStepper:
     if isinstance(event, events.PlayerDeathEvent):
         # The player has died.
         self.notify(events.QuitEvent())
-        adv.app.player_death() 
 
     if isinstance(event, events.QuitEvent):
-      self.keep_going = False
+        self.keep_going = False
+        adv.app.game_quit() 
     return True
