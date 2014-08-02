@@ -49,9 +49,9 @@ class Parser:
     lookObj = self.lookDict[ lookKey ]  
     if lookObj:
       dialogEvent = events.DialogEvent( lookObj )
-      self.appCollection.notifyAppView( dialogEvent )
+      self.appCollection.notify_app_view( dialogEvent )
 
   def initLookDictionary(self):
       return { 
-        'me': self.appCollection.getPlayer()
+        'me': self.appCollection.get_player()
          }

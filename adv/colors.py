@@ -17,6 +17,8 @@ def get_colors(key):
         'monster': curses.color_pair(2),
         'wall':  curses.color_pair(3),
         'floor': curses.color_pair(4),
+        'intro_bg': curses.color_pair(4),
+        'intro_text': curses.color_pair(3)
     }
 
     return colors.get(key)
