@@ -33,6 +33,8 @@ class App:
         interactions.
         """
         # Enter the application
+        # TODO move appropriate references to use app.screen
+        self.screen = screen
         self.before_game_loop(screen)
         self.game_loop()
         self.after_game_loop(screen)
@@ -89,5 +91,15 @@ class App:
           - Game exit handler
         """
         pass
+
+    def player_death(self):
+        """
+        The player has died. Display an outro message and option to:
+          - TODO retry
+          - TODO undead mode
+          - TODO mulligan
+        """
+        self.app_view = FAViews.OutroView(self, self.screen)
+        self.app_view.refresh()
 
 app = App()
