@@ -64,9 +64,6 @@ class AppCollection(Collection):
         return self.mapCollection
   
     def notify(self, event):
-        if isinstance(event, events.PlayerDeathEvent):
-            self.notify(events.QuitEvent())
-
         # Notify the views
         adv.app.app_view.notify(event)
 
