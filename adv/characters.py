@@ -77,7 +77,7 @@ class NPC(Model):
     return True
 
   def move_x_y(self, x, y):
-    [self.x, self.y] = self.appCollection.getMapCollection().getCurrentMap().move_char(self, x, y)
+    [self.x, self.y] = self.appCollection.get_map_collection().getCurrentMap().move_char(self, x, y)
 
   def move(self, mv_event):
     x = self.x + mv_event.getDx()
@@ -141,7 +141,7 @@ class Monster(NPC, Fightable):
         (cx, cy) = self.x, self.y
 
         if self.get_player_dist() <= sensitivity:
-            (px, py) = self.appCollection.getPlayer().getXY()
+            (px, py) = self.appCollection.get_player().getXY()
             (dx, dy) = get_d(cx, px), get_d(cy, py)
         else:
             (dx, dy) = random.randint(-1, 1), random.randint(-1, 1)
@@ -150,32 +150,37 @@ class Monster(NPC, Fightable):
 
     def get_player_dist(self):
         (cx, cy) = self.x, self.y
-        (px, py) = self.appCollection.getPlayer().getXY()
+        (px, py) = self.appCollection.get_player().getXY()
         dist = int(math.sqrt((px - cx)**2 + (py - cy)**2))
         return dist
 
 
 
 class Player(NPC, Fightable):
-  def __init__(self, _id):
-    super(Player, self).__init__(_id, char='@')
-    self.name = "Flarg"
+    """
+    In the single player game, this is the character created by the user.
+    Player health, inventory references, and a notify hook are examples of
+    this class's features.
+    """
+    def __init__(self, _id):
+        super(Player, self).__init__(_id, char='@')
+        self.name = "Flarg"
 
-  def die(self):
-    self.char = 'X'
-    self.appCollection.notify(
-        events.PlayerDeathEvent()
-    )
+    def die(self):
+        self.char = 'X'
+        self.appCollection.notify(
+                events.PlayerDeathEvent()
+        )
 
-  def notify(self, event):
-    if isinstance(event, events.MoveEvent):
-      self.move( event )
-    return True
+    def notify(self, event):
+        if isinstance(event, events.MoveEvent):
+            self.move( event )
+        return True
 
-  def getDescription(self):
-    desc = self.name + " Lvl " + str(self.get_level()) + " | HP " + str( self.get_health() ) + "/" + str( self.get_max_health() ) + "\n\n"
-    desc += "A long description here, will tell the tale of adventures past. The story of scars, tired eyes, and hunger."
-    return desc
+    def getDescription(self):
+        desc = self.name + " Lvl " + str(self.get_level()) + " | HP " + str( self.get_health() ) + "/" + str( self.get_max_health() ) + "\n\n"
+        desc += "A long description here, will tell the tale of adventures past. The story of scars, tired eyes, and hunger."
+        return desc
 
-  def resolve_char_contact(self, char):
-    self.do_combat(char)
+    def resolve_char_contact(self, char):
+      self.do_combat(char)

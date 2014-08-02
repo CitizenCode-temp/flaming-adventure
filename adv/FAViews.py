@@ -4,12 +4,20 @@ import colors
 import curses
 import FACollections
 import events
-"""
-  View
-"""
 
-class View:
+
+class View(object):
+  """
+  View
+
+  The base view class for the game. It has a model, screen, and a collection.
+  """
   def __init__(self, model, screen, collection):
+    """
+    :param model: The object the view represents
+    :param screen: A curses screen reference for updating
+    :param collection: Not sure yet.
+    """
     self.model = model
     self.screen = screen
     self.collection = collection
@@ -24,54 +32,76 @@ class View:
       self.refresh()
     return True
 
-"""
-  AppView
-
-    AppView is the main view object for the application. It holds
-  references to the sub-view objects for messaging and rendering
-  purposes.
-
-"""
 class AppView(View):
-  def __init__(self, model, screen):
-    self.model = model
-    self.screen = screen
-    self.appCollection = adv.app.appColl
-    self.appCollection.setAppView(self)
-    if not self.appCollection.getAppView():
-      raise Exception("No appView in appCollection?")
+    """
+    AppView
 
-    windowHeight = self.screen.getmaxyx()[0]
-    windowWidth = self.screen.getmaxyx()[1]
-    cmdLineHeight = 3
-    statusHeight = 4
-    mapHeight = windowHeight - cmdLineHeight - statusHeight
-    descVisHeight = 10 
-    descVisWidth = 40
-    
-    self.viewCollection = FACollections.Collection()
-    self.mapView = MapView(mapHeight, windowWidth, self.viewCollection)
-    self.statusView = StatusView(statusHeight, (windowHeight - cmdLineHeight), windowWidth, self.viewCollection)
-    self.cmdLineView = CmdLineView(cmdLineHeight, windowHeight, windowWidth, self.viewCollection)
-    self.dialogView = DialogView( descVisHeight, descVisWidth, 1, 10, self.viewCollection)
+    An app-view is a view which takes up the entire application's screen
+    real-estate. It contains sub-views which are further specialized.
+    For instance, the character creation section of the game, or
+    the adventure portion of the game.
+    """
+    def __init__(self, model, screen):
+        self.model = model
+        self.screen = screen
+        self.appCollection = adv.app.appColl
 
-  def notify(self, event):
-    self.viewCollection.notify(event)
-    return True
+        # Holds all the sub-views
+        self.viewCollection = FACollections.Collection()
 
-  def refresh(self):
-    self.mapView.refresh()
-    self.statusView.refresh()
-    # Don't refresh cmdLineView
-    #self.cmdLineView.refresh()
-    self.screen.refresh()
-    return True
-    
-  def getCmdLineView(self):
-    return self.cmdLineView
+        # Get basic window dimensions
+        self.windowHeight = self.screen.getmaxyx()[0]
+        self.windowWidth = self.screen.getmaxyx()[1]
 
-  def getStatusView(self):
-    return self.statusView
+    def notify(self, event):
+        self.viewCollection.notify(event)
+        return True
+
+    def refresh(self):
+        raise NotImplementedError("Views must implement a refresh method")
+
+
+class AdventureView(AppView):
+    """
+      AdventureView
+
+        AdventureView is the main view object for the application. It holds
+      references to the sub-view objects for messaging and rendering
+      purposes.
+
+    """
+    def __init__(self, model, screen):
+        super(AdventureView, self).__init__(model, screen)
+
+        # Sub-view dimensions
+        cmdLineHeight = 3
+        statusHeight = 4
+
+        # Calculate available map real-estate
+        mapHeight = self.windowHeight - cmdLineHeight - statusHeight
+        descVisHeight = 10 
+        descVisWidth = 40
+        
+        # Sub-views
+        self.mapView = MapView(mapHeight, self.windowWidth, self.viewCollection)
+        self.statusView = StatusView(statusHeight, (self.windowHeight - cmdLineHeight), self.windowWidth, self.viewCollection)
+        self.cmdLineView = CmdLineView(cmdLineHeight, self.windowHeight, self.windowWidth, self.viewCollection)
+        self.dialogView = DialogView( descVisHeight, descVisWidth, 1, 10, self.viewCollection)
+
+
+    def refresh(self):
+        self.mapView.refresh()
+        self.statusView.refresh()
+        # Don't refresh cmdLineView
+        #self.cmdLineView.refresh()
+        self.screen.refresh()
+        return True
+        
+    def getCmdLineView(self):
+        return self.cmdLineView
+
+    def getStatusView(self):
+        return self.statusView
 
 class DialogView(View):
   def __init__(self, height, width, yOffset, xOffset, viewCollection):
@@ -174,10 +204,10 @@ class StatusView(CursesView):
   def refresh(self):
     self.screen.clear() 
 
-    name = self.appCollection.getPlayer().get_name()
-    hp = str( self.appCollection.getPlayer().get_health() )
-    maxHp = str( self.appCollection.getPlayer().get_max_health() )
-    level = str( self.appCollection.getPlayer().get_level() )
+    name = self.appCollection.get_player().get_name()
+    hp = str( self.appCollection.get_player().get_health() )
+    maxHp = str( self.appCollection.get_player().get_max_health() )
+    level = str( self.appCollection.get_player().get_level() )
 
     self.screen.addstr(0,0, name + " Lvl " + level + " | A5 D3 S1 | HP " + hp + "/" + maxHp + " | " + self.statusFlag + " | " + self.lastCmd)
 
@@ -228,11 +258,11 @@ class MapView(CursesView):
     self.screen = curses.newwin(height-2, windowWidth-2, 1, 1) 
     self.screen.scrollok(True)
     self.appCollection = adv.app.appColl
-    self.mapCollection = self.appCollection.getMapCollection()
+    self.mapCollection = self.appCollection.get_map_collection()
     self.viewCollection = viewCollection
     self.viewCollection.add(self)
 
-    self.playerView = PlayerView(self.screen, self.appCollection.getPlayer())
+    self.playerView = PlayerView(self.screen, self.appCollection.get_player())
 
     self.npc_views = []
     npcs = self.mapCollection.getCurrentMap().get_npcs()
