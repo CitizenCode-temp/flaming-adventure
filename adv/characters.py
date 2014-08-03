@@ -32,6 +32,14 @@ class NPC(Model):
   def is_dead(self):
       return self.health > 0
 
+  def heal_continue(self):
+      """
+      heal_continue
+
+      This is the quit menu continue option's effects on the player.
+      """
+      self.health = self.maxHealth
+
   def get_defense(self):
     return self.defense
 
