@@ -60,8 +60,8 @@ class App:
 
     def initialize_game_resources(self, screen):
         # Setup game resources
-        player = characters.Player("default-player")
-        self.appColl.set_player(player)
+        self.player = characters.Player("default-player")
+        self.appColl.set_player(self.player)
         
         self.appColl.init_map_collection()
 
@@ -102,5 +102,16 @@ class App:
         """
         self.app_view = FAViews.OutroView(self, self.screen)
         self.app_view.refresh()
+
+    def game_continue(self):
+        """
+        game_continue
+
+        Things to do when 'continue' is selected in the quit menu.
+        """
+        self.app_view = FAViews.AdventureView(self, self.screen)
+        self.player.heal_continue()
+        self.app_view.refresh()
+        self.appStepper.restart()
 
 app = App()

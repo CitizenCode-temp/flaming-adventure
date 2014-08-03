@@ -72,30 +72,63 @@ class OutroView(AppView):
     """
     def __init__(self, model, screen):
         super(OutroView, self).__init__(model, screen)
-        self.outerScreen = curses.newwin(self.windowHeight, self.windowWidth, 0, 0) 
-        self.outerScreen.border(0)
+        self.outer_window = curses.newwin(self.windowHeight, self.windowWidth, 0, 0) 
+        self.outer_window.border(0)
         self.inner_height = self.windowHeight - 2
         self.inner_width = self.windowWidth - 2
-        self.screen = curses.newwin(self.inner_height, self.inner_width, 1, 1) 
-        self.screen.scrollok(True)
+        self.inner_window = curses.newwin(self.inner_height, self.inner_width, 1, 1) 
+        self.inner_window.scrollok(True)
+        self.screen = screen
 
     def refresh(self):
-        self.screen.clear()
-        self.outerScreen.box()
-        self.outerScreen.noutrefresh()
-        self.refresh_inner_screen()
-        self.screen.noutrefresh()
-        self.screen.getch(0,0) # Get the command, off the screen, to pause
+        self.inner_window.clear()
+        self.outer_window.box()
+        self.outer_window.noutrefresh()
+        self.refresh_inner_window()
+        self.inner_window.noutrefresh()
+        self.do_quit_splash()
 
-    def refresh_inner_screen(self):
-        # TODO make sure the screen is big enough
-            bg_color = colors.get_colors('intro_bg')
-            text_color = colors.get_colors('intro_text')
-            for x in range(self.inner_width):
-                for y in range(self.inner_height):
-                    # Same color bg/fg?
-                    self.screen.addstr(y, x, '.', bg_color)
-            self.screen.addstr(20, 10, 'You have died.', text_color)
+    def do_quit_splash(self):
+        """
+        do_quit_splash
+
+        Let the user quit or retry.
+        """
+        opts = [113, 99] # q, c
+        c = None
+
+        while c not in opts:
+            c = self.inner_window.getch(0,0)
+
+        if c == 113: # ord('q')
+            # Quit the app
+            return
+
+        if c == 99: # ord('c')
+            # Turn the stepper on.
+            ## TODO
+            # You have to hit q twice on a second pass through the quit splash?
+            #     Seemed like it was still getch on the cmdline view?
+            adv.app.game_continue()
+
+    def refresh_inner_window(self):
+        player = adv.app.appColl.get_player()
+        # TODO make sure the window is big enough
+        bg_color = colors.get_colors('intro_bg')
+        text_color = colors.get_colors('intro_text')
+        for x in range(self.inner_width):
+            for y in range(self.inner_height):
+                # Same color bg/fg?
+                self.inner_window.addstr(y, x, ' ', bg_color)
+
+
+        self.inner_window.addstr(10, 5, 'You have died or quit.', text_color)
+        self.inner_window.addstr(12, 5, 'RIP {0}'.format(player.get_name()), text_color)
+        self.inner_window.addstr(13, 5, 'Level: {0}'.format(player.get_level()), text_color)
+        self.inner_window.addstr(14, 5, 'HP: {0}'.format(player.get_max_health()), text_color)
+        self.inner_window.addstr(16, 5, 'Please press a key to continue/quit', text_color)
+        self.inner_window.addstr(17, 5, 'q - quit', text_color)
+        self.inner_window.addstr(18, 5, 'c - continue', text_color)
 
 
 class IntroView(AppView):
@@ -106,20 +139,20 @@ class IntroView(AppView):
     """
     def __init__(self, model, screen):
         super(IntroView, self).__init__(model, screen)
-        self.outerScreen = curses.newwin(self.windowHeight, self.windowWidth, 0, 0) 
-        self.outerScreen.border(0)
+        self.outer_window = curses.newwin(self.windowHeight, self.windowWidth, 0, 0) 
+        self.outer_window.border(0)
         self.inner_height = self.windowHeight - 2
         self.inner_width = self.windowWidth - 2
-        self.screen = curses.newwin(self.inner_height, self.inner_width, 1, 1) 
-        self.screen.scrollok(True)
+        self.inner_window = curses.newwin(self.inner_height, self.inner_width, 1, 1) 
+        self.inner_window.scrollok(True)
 
     def refresh(self):
-        self.screen.clear()
-        self.outerScreen.box()
-        self.outerScreen.noutrefresh()
+        self.inner_window.clear()
+        self.outer_window.box()
+        self.outer_window.noutrefresh()
         self.refresh_inner_screen()
-        self.screen.noutrefresh()
-        self.screen.getch(0,0) # Get the command, off the screen, to pause
+        self.inner_window.noutrefresh()
+        self.inner_window.getch(0,0) # Get the command, off the screen, to pause
 
     def refresh_inner_screen(self):
         # TODO make sure the screen is big enough
@@ -128,8 +161,8 @@ class IntroView(AppView):
             for x in range(self.inner_width):
                 for y in range(self.inner_height):
                     # Same color bg/fg?
-                    self.screen.addstr(y, x, '.', bg_color)
-            self.screen.addstr(20, 10, 'Welcome to flaming-adventure', text_color)
+                    self.inner_window.addstr(y, x, '.', bg_color)
+            self.inner_window.addstr(20, 10, 'Welcome to flaming-adventure', text_color)
 
 
 class AdventureView(AppView):
@@ -166,7 +199,6 @@ class AdventureView(AppView):
         # Don't refresh cmdLineView
         #self.cmdLineView.refresh()
         self.screen.refresh()
-        return True
         
     def getCmdLineView(self):
         return self.cmdLineView
@@ -184,9 +216,9 @@ class DialogView(View):
         self.width = width
         self.yOffset = yOffset
         self.xOffset = xOffset
-        self.outerScreen = curses.newwin(height + 3, width + 2, self.yOffset - 1, self.xOffset -1)
-        self.screen = curses.newpad(100, width) 
-        self.screen.scrollok(True)
+        self.outer_window = curses.newwin(height + 3, width + 2, self.yOffset - 1, self.xOffset -1)
+        self.inner_window = curses.newpad(100, width) 
+        self.inner_window.scrollok(True)
         self.appCollection = adv.app.appColl
         self.viewCollection = viewCollection
         self.viewCollection.add(self)
@@ -204,17 +236,17 @@ class DialogView(View):
             maxRow = nTxtRows - self.height
 
         curses.noecho()
-        self.screen.clear()
-        self.screen.addstr(0, 0, "j/k -- scroll down/up | y/n -- yes/no, q -- quit") # Documentation line
-        self.screen.addstr(2, 0, txt)
+        self.inner_window.clear()
+        self.inner_window.addstr(0, 0, "j/k -- scroll down/up | y/n -- yes/no, q -- quit") # Documentation line
+        self.inner_window.addstr(2, 0, txt)
 
      
         # Enter loop with simple interactivity
         while True:
-            self.outerScreen.box()
-            self.outerScreen.noutrefresh()
-            self.screen.refresh(currRow, 0, self.yOffset, self.xOffset, self.yOffset + self.height, self.xOffset + self.width)
-            c = self.screen.getch()
+            self.outer_window.box()
+            self.outer_window.noutrefresh()
+            self.inner_window.refresh(currRow, 0, self.yOffset, self.xOffset, self.yOffset + self.height, self.xOffset + self.width)
+            c = self.inner_window.getch()
             if c == 106 and currRow < maxRow: # j scroll down
                 currRow += 1
             if c == 107 and currRow > 0: # k scroll up
@@ -222,10 +254,10 @@ class DialogView(View):
             if c == 113: # q quit dialog
                 break
 
-        self.outerScreen.clear()
-        self.outerScreen.noutrefresh()
-        self.screen.clear()
-        self.screen.refresh(currRow, 0, 1, self.xOffset, 11, self.xOffset + self.width)
+        self.outer_window.clear()
+        self.outer_window.noutrefresh()
+        self.inner_window.clear()
+        self.inner_window.refresh(currRow, 0, 1, self.xOffset, 11, self.xOffset + self.width)
         curses.echo()
 
 class CursesView(View):

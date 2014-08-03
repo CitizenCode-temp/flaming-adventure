@@ -6,7 +6,6 @@
   notify function.
 """
 import adv
-import events
 import FAMap
 
 class Collection:
