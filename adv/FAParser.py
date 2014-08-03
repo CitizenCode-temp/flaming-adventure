@@ -34,7 +34,10 @@ class Parser:
         self.appCollection.notify( events.QuitEvent() )
 
       if cmdArr[0] == "go":
-        mvEvent = events.MoveEvent(int(cmdArr[1]), int(cmdArr[2]))
+        try:
+            mvEvent = events.MoveEvent(int(cmdArr[1]), int(cmdArr[2]))
+        except ValueError:
+            raise Exception("Could not parse go arguments.")
         self.appCollection.notify( mvEvent )
 
       if cmdArr[0] == "look":
@@ -49,7 +52,7 @@ class Parser:
     lookObj = self.lookDict[ lookKey ]  
     if lookObj:
       dialogEvent = events.DialogEvent( lookObj )
-      self.appCollection.notify_app_view( dialogEvent )
+      adv.app.appView.notify( dialogEvent )
 
   def initLookDictionary(self):
       return { 
