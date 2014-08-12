@@ -33,6 +33,8 @@ class App:
         interactions.
         """
         # Enter the application
+        # TODO move appropriate references to use app.screen
+        self.screen = screen
         self.before_game_loop(screen)
         self.game_loop()
         self.after_game_loop(screen)
@@ -58,8 +60,8 @@ class App:
 
     def initialize_game_resources(self, screen):
         # Setup game resources
-        player = characters.Player("default-player")
-        self.appColl.set_player(player)
+        self.player = characters.Player("default-player")
+        self.appColl.set_player(self.player)
         
         self.appColl.init_map_collection()
 
@@ -89,5 +91,27 @@ class App:
           - Game exit handler
         """
         pass
+
+    def game_quit(self):
+        """
+        e.g. 'quit' command or the player has died. Display an outro message
+        and option to:
+          - TODO retry
+          - TODO undead mode
+          - TODO mulligan
+        """
+        self.app_view = FAViews.OutroView(self, self.screen)
+        self.app_view.refresh()
+
+    def game_continue(self):
+        """
+        game_continue
+
+        Things to do when 'continue' is selected in the quit menu.
+        """
+        self.app_view = FAViews.AdventureView(self, self.screen)
+        self.player.heal_continue()
+        self.app_view.refresh()
+        self.appStepper.restart()
 
 app = App()
