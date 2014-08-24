@@ -20,7 +20,8 @@ class MapSector(model.Model):
     if p:
       for c in self.characters:
         if not c.get_passable():
-          p = False
+            if c.is_alive():
+              p = False
     return p
 
   def removeCharacter(self, charObj):
