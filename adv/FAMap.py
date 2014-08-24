@@ -293,7 +293,8 @@ class Map(model.Model):
         ms = self.get_map_sector(x, y)
         if ms:
             for c in ms.get_characters():
-                char.resolve_char_contact(c)
+                if id(c) != id(char):
+                    char.resolve_char_contact(c)
 
     def get_map_sector(self, x, y):
         if self.contains(x, y):

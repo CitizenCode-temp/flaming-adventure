@@ -124,7 +124,8 @@ class Monster(NPC, Fightable):
         self.name = "Evil Crud (Monster)"
 
     def resolve_char_contact(self, char):
-        self.do_combat(char)
+        if char.is_alive():
+            self.do_combat(char)
 
     def notify(self, event):
         if isinstance(event, events.StepEvent):
@@ -191,4 +192,5 @@ class Player(NPC, Fightable):
         return desc
 
     def resolve_char_contact(self, char):
-      self.do_combat(char)
+      if char.is_alive():
+          self.do_combat(char)
